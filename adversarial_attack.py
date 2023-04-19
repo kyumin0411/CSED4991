@@ -8,20 +8,28 @@ import pickle
 import random
 import sys
 import os
-
+from torch.utils.data.dataset import Dataset
+from torch.utils import data
 #from model import UNet, SegNet, DenseNet
 
 #from dataset import SampleDataset
 from scipy.stats import rice
-from skimage.measure import compare_ssim as ssim
+# from skimage.measure import compare_ssim as ssim
 from dag import DAG
 from dag_utils import generate_target, generate_target_swap
 from util import make_one_hot
-from configs.test_config import get_arguments
+from configs.test_config_kyumin import get_arguments
+from model.refinenetlw import rf_lw101
+
+from dataset.cityscapes_dataset import cityscapesDataSet
+from dataset.Foggy_Zurich_test import foggyzurichDataSet
+from dataset.foggy_driving import foggydrivingDataSet
 
 from optparse import OptionParser
 
 BATCH_SIZE = 10
+RESTORE_FROM = 'without_pretraining'
+IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
 class SampleDataset(Dataset):
     
@@ -58,27 +66,27 @@ class SampleDataset(Dataset):
             
         return (image, labels)
 
-def load_data(args):
+#def load_data(args):
     
     # data_path = args.data_path
-    data_path = './dataset/cityscapes_list/clear_lindau.txt'
-    n_classes = args.classes
+    #data_path = './dataset/cityscapes_list/clear_lindau.txt'
+    #n_classes = args.classes
     # data_width = args.width
     # data_height = args.height
     
     # generate loader
-    test_dataset = SampleDataset(data_path)
+    #test_dataset = SampleDataset(data_path)
     
-    test_loader = DataLoader(
-        test_dataset,
-        batch_size=BATCH_SIZE,
-        num_workers=4,
-    )
+    #test_loader = DataLoader(
+    #    test_dataset,
+    #    batch_size=BATCH_SIZE,
+    #    num_workers=4,
+    #)
     
-    print('test_dataset : {}, test_loader : {}'.format(len(test_dataset), len(test_loader)))
+    #print('test_dataset : {}, test_loader : {}'.format(len(test_dataset), len(test_loader)))
     
     
-    return test_dataset, test_loader
+    #return test_dataset, test_loader
 
 # generate Rician noise examples
 # Meausre the difference between original and adversarial examples by using structural Similarity (SSIM). 
@@ -177,27 +185,27 @@ def DAG_Attack(model, test_dataset, args):
         # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
         label_oh=make_one_hot(label.long(),n_classes,device)
 
-        if args.attacks == 'DAG_A':
+        #if args.attacks == 'DAG_A':
 
-            adv_target = torch.zeros_like(label_oh)
+        #    adv_target = torch.zeros_like(label_oh)
 
-        elif args.attacks == 'DAG_B':
+        #elif args.attacks == 'DAG_B':
 
-            adv_target=generate_target_swap(label_oh.cpu().numpy())
-            adv_target=torch.from_numpy(adv_target).float()
+        #    adv_target=generate_target_swap(label_oh.cpu().numpy())
+        #    adv_target=torch.from_numpy(adv_target).float()
 
-        elif args.attacks == 'DAG_C':
+        #elif args.attacks == 'DAG_C':
             
             # choice one randome particular class except background class(0)
-            unique_label = torch.unique(label)
-            target_class = int(random.choice(unique_label[1:]).item())
+        unique_label = torch.unique(label)
+        target_class = int(random.choice(unique_label[1:]).item())
 
-            adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
-            adv_target=torch.from_numpy(adv_target).float()
+        adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
+        adv_target=torch.from_numpy(adv_target).float()
 
-        else :
-            print("wrong adversarial attack types : must be DAG_A, DAG_B, or DAG_C")
-            raise SystemExit
+        #else :
+        #    print("wrong adversarial attack types : must be DAG_A, DAG_B, or DAG_C")
+        #    raise SystemExit
 
 
         adv_target=adv_target.to(device)
@@ -220,7 +228,7 @@ def DAG_Attack(model, test_dataset, args):
 
         del image_iteration
     
-    print('total {} {} images are generated'.format(len(adversarial_examples), args.attacks))
+    print('total {} {} images are generated'.format(len(adversarial_examples)))
     
     return adversarial_examples
 
@@ -262,7 +270,7 @@ if __name__ == "__main__":
     # else:
         
 
-    adversarial_examples = DAG_Attack(model, test_dataset, args)
+    adversarial_examples = DAG_Attack(model, testloader1, args)
 
         
     # save adversarial examples([adversarial examples, labels])
