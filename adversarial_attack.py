@@ -15,7 +15,7 @@ from scipy.stats import rice
 from dag import DAG
 from dag_utils import generate_target, generate_target_swap
 from util import make_one_hot
-from configs.test_config_kyumin import get_arguments
+from configs.test_config import get_arguments
 
 from model.refinenetlw import rf_lw101
 from dataset.cityscapes_dataset import cityscapesDataSet
