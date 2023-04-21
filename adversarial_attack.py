@@ -84,36 +84,44 @@ def DAG_Attack(model, testloader):
     
     return adversarial_examples
 
+
 if __name__ == "__main__":
+    print(1)
+    print(2)
+    print(3)
+    print(4)
+    print(5)
 
-    args = get_arguments()
+# if __name__ == "__main__":
 
-    n_classes = args.num_classes
+#     args = get_arguments()
 
-    restore = torch.load(args.restore_from)
-    model = rf_lw101(num_classes=args.num_classes)
+#     n_classes = args.num_classes
 
-    model.load_state_dict(restore['state_dict'])
-    start_iter = 0
+#     restore = torch.load(args.restore_from)
+#     model = rf_lw101(num_classes=args.num_classes)
 
-    save_dir_adversarial = osp.join(f'./result_adversarial', args.file_name)
+#     model.load_state_dict(restore['state_dict'])
+#     start_iter = 0
+
+#     save_dir_adversarial = osp.join(f'./result_adversarial', args.file_name)
     
-    if not os.path.exists(save_dir_adversarial):
-        os.makedirs(save_dir_adversarial)
+#     if not os.path.exists(save_dir_adversarial):
+#         os.makedirs(save_dir_adversarial)
 
-    model.eval()
+#     model.eval()
 
-    testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
-                            batch_size=1, shuffle=False, pin_memory=True)
+#     testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
+#                             batch_size=1, shuffle=False, pin_memory=True)
 
-    for index, batch in enumerate(testloader):
-        image, label, size, name = batch
-        print (image)
+#     for index, batch in enumerate(testloader):
+#         image, label, size, name = batch
+#         print (image)
 
-    adversarial_examples = DAG_Attack(model, testloader)
+#     adversarial_examples = DAG_Attack(model, testloader)
 
 
         
-    # save adversarial examples([adversarial examples, labels])
-    with open('../data/adversarial_example', 'wb') as fp:
-        pickle.dump(adversarial_examples, fp)
+#     # save adversarial examples([adversarial examples, labels])
+#     with open('../data/adversarial_example', 'wb') as fp:
+#         pickle.dump(adversarial_examples, fp)
