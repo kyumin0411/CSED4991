@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore")
 
 from model.refinenetlw import rf_lw101
 from compute_iou import compute_mIoU
-from configs.test_config import get_arguments
+from configs.test_config_kyumin import get_arguments
 from dataset.cityscapes_dataset import cityscapesDataSet
 from dataset.Foggy_Zurich_test import foggyzurichDataSet
 from dataset.foggy_driving import foggydrivingDataSet
