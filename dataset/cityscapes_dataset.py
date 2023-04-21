@@ -49,6 +49,14 @@ class cityscapesDataSet(data.Dataset):
         tsfrms = transforms.Compose(tsfrms)
 
         return tsfrms(image), tsfrms(lbl)
+    
+    def encode_segmap(self, mask):
+        # Put all void classes to zero
+        for _voidc in self.void_classes:
+            mask[mask == _voidc] = self.ignore_index
+        for _validc in self.valid_classes:
+            mask[mask == _validc] = self.class_map[_validc]
+        return mask
 
     def __getitem__(self, index):
         datafiles = self.files[index]
