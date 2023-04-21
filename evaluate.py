@@ -41,8 +41,10 @@ def colorize_mask(mask):
 
 def eval():
     """Create the model and start the evaluation process."""
+    print("start evaluate.py")
     args = get_arguments()
 
+    print("parsing arguments is done")
     if args.restore_from == RESTORE_FROM:
         start_iter = 0
         model = rf_lw101(num_classes=args.num_classes)
@@ -53,6 +55,8 @@ def eval():
 
         model.load_state_dict(restore['state_dict'])
         start_iter = 0
+
+    print("restoring loading from previous model is done")
 
     save_dir_fz = osp.join(f'./result_FZ', args.file_name)
     save_dir_fd = osp.join(f'./result_FD', args.file_name)
@@ -67,6 +71,8 @@ def eval():
         os.makedirs(save_dir_fdd)
     if not os.path.exists(save_dir_clindau):
         os.makedirs(save_dir_clindau)
+
+    print("making save directory path is done")
     
     model.eval()
     device = torch.device('cuda:0')
