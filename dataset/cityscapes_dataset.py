@@ -26,6 +26,31 @@ class cityscapesDataSet(data.Dataset):
             self.img_ids = self.img_ids * int(np.ceil(float(max_iters) / len(self.img_ids)))
         self.files = []
         self.set = set
+
+        self.void_classes = [0, 1, 2, 3, 4, 5, 6, 9, 10, 14, 15, 16, 18, 29, 30, -1]
+        self.valid_classes = [
+            7,
+            8,
+            11,
+            12,
+            13,
+            17,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            31,
+            32,
+            33,
+        ]
+        self.ignore_index = 255
+        self.class_map = dict(zip(self.valid_classes, range(19)))
         for name in self.img_ids:
             img_file = osp.join(self.root, "leftImg8bit/%s/%s" % (self.set, name))
             label_file = osp.join(self.root, "gtFine/%s/%s" % (self.set, name[:-15]+'gtFine_labelIds.png'))
@@ -34,6 +59,7 @@ class cityscapesDataSet(data.Dataset):
                 "label": label_file,
                 "name": name
             })
+        
 
     def __len__(self):
         return len(self.files)
