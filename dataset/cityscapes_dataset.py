@@ -38,6 +38,7 @@ class cityscapesDataSet(data.Dataset):
         datafiles = self.files[index]
 
         image = Image.open(datafiles["img"]).convert('RGB')
+        label = Image.open(datafiles["label"])
         name = datafiles["name"]
 
         # resize
@@ -50,7 +51,11 @@ class cityscapesDataSet(data.Dataset):
         image -= self.mean
         image = image.transpose((2, 0, 1))
 
-        return image.copy(), np.array(size), name
+        # transform label's type
+        # lbl = label.astype(float)
+        # label = lbl.astype(int)
+
+        return image.copy(), label.copy(), np.array(size), name
 
 
 if __name__ == '__main__':

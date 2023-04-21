@@ -4,11 +4,10 @@ import numpy as np
 
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 MODEL = 'RefineNetNew'
-DATA_DIRECTORY ='/hdd1'
+DATA_DIRECTORY ='/home/kyumin/data'
 DATA_CITY_PATH = './dataset/cityscapes_list/clear_lindau.txt'
 DATA_DIRECTORY_CITY = '/home/kyumin/data/Cityscapes'
 DATA_LIST_PATH_EVAL = '/home/kyumin/data/Foggy_Zurich/lists_file_names/RGB_testv2_filenames.txt'
-#DATA_LIST_PATH_EVAL = '/hdd1'
 DATA_LIST_PATH_EVAL_FD ='./lists_file_names/leftImg8bit_testall_filenames.txt'
 DATA_LIST_PATH_EVAL_FDD ='./lists_file_names/leftImg8bit_testdense_filenames.txt' 
 DATA_DIR_EVAL = '/home/kyumin/data'
