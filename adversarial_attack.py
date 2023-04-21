@@ -23,46 +23,10 @@ from dataset.cityscapes_dataset import cityscapesDataSet
 from optparse import OptionParser
 
 #from model import UNet, SegNet, DenseNet
-#from dataset import SampleDataset
 # from skimage.measure import compare_ssim as ssim
 
 BATCH_SIZE = 10
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
-
-class SampleDataset(Dataset):
-    
-    def __init__(self, root_dir):
-    
-        self.data_path = root_dir
-
-        self.images = []
-        self.labels = []
-        
-        # data form [images, labels]
-        with open (self.data_path, 'rb') as fp:
-            data = pickle.load(fp)
-        
-        for i in range(len(data)):
-            
-            self.images.append(data[i][0])
-            self.labels.append(data[i][1])
-             
-
-    def __len__(self):
-        return len(self.labels)
-        
-    def __getitem__(self, index):
-        image = self.images[index]
-        labels = self.labels[index]
-        
-        torch_transform = transforms.Compose([
-            transforms.ToTensor()
-        ])
-        
-        image = torch_transform(image)
-        labels = torch_transform(labels)
-            
-        return (image, labels)
 
 def DAG_Attack(model, testloader):
     
@@ -142,9 +106,14 @@ if __name__ == "__main__":
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                             batch_size=1, shuffle=False, pin_memory=True)
 
+    for index, batch in enumerate(testloader):
+        image, label, size, name = batch
+        print (image)
+
     adversarial_examples = DAG_Attack(model, testloader)
+
 
         
     # save adversarial examples([adversarial examples, labels])
-    with open('./data/adversarial_example', 'wb') as fp:
+    with open('../data/adversarial_example', 'wb') as fp:
         pickle.dump(adversarial_examples, fp)
