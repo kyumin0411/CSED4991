@@ -8,6 +8,8 @@ import torch
 import torchvision
 from torch.utils import data
 from PIL import Image
+from torchvision import transforms
+import torchvision.transforms.functional as TF
 
 class cityscapesDataSet(data.Dataset):
 
@@ -35,6 +37,18 @@ class cityscapesDataSet(data.Dataset):
 
     def __len__(self):
         return len(self.files)
+    
+
+    def _apply_transform(self, image, lbl, scale=(0.7, 1.3), crop_size=600):
+        (W, H) = image.size[:2]
+        if isinstance(scale, tuple):
+            scale = random.random() * 0.6 + 0.7
+
+        tsfrms = []
+        tsfrms.append(transforms.Resize((int(H * scale), int(W * scale))))
+        tsfrms = transforms.Compose(tsfrms)
+
+        return tsfrms(image), tsfrms(lbl)
 
     def __getitem__(self, index):
         datafiles = self.files[index]
@@ -46,16 +60,28 @@ class cityscapesDataSet(data.Dataset):
         # resize
         w, h = image.size
 
+        # edit
+        image, label = self._apply_transform(image, label, scale=0.8)
+
+        crop_size = min(600, min(image.size[:2]))
+        i, j, h, w = transforms.RandomCrop.get_params(image, output_size=(crop_size,crop_size)) 
+        image = TF.crop(image, i, j, h, w) 
+        label = TF.crop(label, i, j, h, w)
+
+        if random.random() > 0.5:
+            image = TF.hflip(image)
+            label = TF.hflip(label)
+
         image = np.asarray(image, np.float32)
+        label = self.encode_segmap(np.array(label, dtype=np.float32))
+
+        lbl = label.astype(float)
+        label = lbl.astype(int)
 
         size = image.shape
         image = image[:, :, ::-1]  # change to BGR
         image -= self.mean
         image = image.transpose((2, 0, 1))
-
-        # transform label's type
-        # lbl = label.astype(float)
-        # label = lbl.astype(int)
 
         return image.copy(), label.copy(), np.array(size), name
 
