@@ -31,30 +31,32 @@ IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32
 def DAG_Attack(model, testloader):
     print("DAG Attack Starts")
     # Hyperparamter for DAG 
+
+    import pdb; pdb.set_trace()
+    
     num_iterations=20
     gamma=0.5
     num=15    
 
     adversarial_examples = []
 
-    for index, batch in enumerate(testloader):
-        image, label, size, name = batch
 
-        print(index, image) 
-        print(index, label)
-        print(index, size)
-        print(index, name)
-        image = image.unsqueeze(0)
-        pure_label = label.squeeze(0).numpy()
 
-        # image , label = image.clone().detach().requires_grad_(True).float(), label.clone().detach().float()
-        # image , label = image.to(device), label.to(device)
+    # for index, batch in enumerate(testloader):
+    #     image, label, size, name = batch
 
-        # # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
+    #     print
+    #     image = image.unsqueeze(0)
+    #     pure_label = label.squeeze(0).numpy()
 
-        # label_oh = make_one_hot(label.long(),n_classes, device)
+    #     image , label = image.clone().detach().requires_grad_(True).float(), label.clone().detach().float()
+    #     image , label = image.to(device), label.to(device)
 
-        # print("label : ", label)
+    #     # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
+
+    #     label_oh = make_one_hot(label.long(),n_classes, device)
+
+    #     print("label : ", label)
         # unique_label = torch.unique(label)
         # target_class = int(random.choice(unique_label[1:]).item())
 
