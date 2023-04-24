@@ -114,7 +114,12 @@ if __name__ == "__main__":
     model.eval()
     print("evaluate model")
 
-    print("torch.cuda.is_available(): ", torch.cuda.is_available())
+    if(torch.cuda.is_available()):
+        print("true")
+    else:
+        print("false")
+
+    # print("torch.cuda.is_available(): ", torch.cuda.is_available())
     if(torch.cuda.is_available()):
         device = torch.device("cuda:0")
     else:
