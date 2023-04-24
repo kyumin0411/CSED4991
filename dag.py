@@ -35,6 +35,8 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
         image_iteration: List of image per iteration as numpy array
     '''
 
+    print("DAG algorithm")
+
     noise_total=[]
     noise_iteration=[]
     prediction_iteration=[]

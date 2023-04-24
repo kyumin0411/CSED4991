@@ -28,7 +28,7 @@ from optparse import OptionParser
 BATCH_SIZE = 10
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
-def DAG_Attack(model):
+def DAG_Attack(model, testloader):
     print("DAG Attack Starts")
     # Hyperparamter for DAG 
     num_iterations=20
@@ -37,47 +37,47 @@ def DAG_Attack(model):
 
     adversarial_examples = []
 
-    # for index, batch in enumerate(testloader):
-    #     image, label, size, name = batch
+    for index, batch in enumerate(testloader):
+        image, label, size, name = batch
 
-    #     image = image.unsqueeze(0)
-    #     pure_label = label.squeeze(0).numpy()
+        image = image.unsqueeze(0)
+        pure_label = label.squeeze(0).numpy()
 
-    #     image , label = image.clone().detach().requires_grad_(True).float(), label.clone().detach().float()
-    #     image , label = image.to(device), label.to(device)
+        image , label = image.clone().detach().requires_grad_(True).float(), label.clone().detach().float()
+        image , label = image.to(device), label.to(device)
 
-    #     # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
+        # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
 
-    #     label_oh = make_one_hot(label.long(),n_classes, device)
+        label_oh = make_one_hot(label.long(),n_classes, device)
 
-    #     unique_label = torch.unique(label)
-    #     target_class = int(random.choice(unique_label[1:]).item())
+        unique_label = torch.unique(label)
+        target_class = int(random.choice(unique_label[1:]).item())
 
-    #     adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
-    #     adv_target=torch.from_numpy(adv_target).float()
+        adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
+        adv_target=torch.from_numpy(adv_target).float()
 
-    #     adv_target=adv_target.to(device)
+        adv_target=adv_target.to(device)
 
-    #     _, _, _, _, _, image_iteration=DAG(model=model,
-    #               image=image,
-    #               ground_truth=label_oh,
-    #               adv_target=adv_target,
-    #               num_iterations=num_iterations,
-    #               gamma=gamma,
-    #               no_background=True,
-    #               background_class=0,
-    #               device=device,
-    #               verbose=False)
+        _, _, _, _, _, image_iteration=DAG(model=model,
+                  image=image,
+                  ground_truth=label_oh,
+                  adv_target=adv_target,
+                  num_iterations=num_iterations,
+                  gamma=gamma,
+                  no_background=True,
+                  background_class=0,
+                  device=device,
+                  verbose=False)
 
-    #     if len(image_iteration) >= 1:
+        if len(image_iteration) >= 1:
 
-    #         adversarial_examples.append([image_iteration[-1],
-    #                                      pure_label])
+            adversarial_examples.append([image_iteration[-1],
+                                         pure_label])
 
-    #     del image_iteration
+        del image_iteration
 
 
-    # print('total {} {} images are generated'.format(len(adversarial_examples)))
+    print('total {} {} images are generated'.format(len(adversarial_examples)))
     
     return adversarial_examples
 
@@ -85,23 +85,15 @@ if __name__ == "__main__":
     print("start adversarial_attack.py")
 
     args = get_arguments()
-
-    print("parsing arguments is done")
-
     restore = torch.load(args.restore_from)
 
     print("restoring loading from previous model is done")
 
     model = rf_lw101(num_classes=args.num_classes)
 
-    print("generating model is done")
-
     model.load_state_dict(restore['state_dict'])
     start_iter = 0
 
-    print("loading the model is done")
-
-    
     n_classes = args.num_classes
 
     save_dir_adversarial = osp.join(f'./result_adversarial', args.file_name)
@@ -109,43 +101,17 @@ if __name__ == "__main__":
     if not os.path.exists(save_dir_adversarial):
         os.makedirs(save_dir_adversarial)
 
-    print("making save directory path is done")
-
     model.eval()
     print("evaluate model")
 
-    if(torch.cuda.is_available()):
-        print("true")
-    else:
-        print("false")
-
-    # print("torch.cuda.is_available(): ", torch.cuda.is_available())
-    if(torch.cuda.is_available()):
-        device = torch.device("cuda:0")
-    else:
-        device = torch.device("cpu")
-
-    print("create torch device")
+    device = torch.device("cuda:0")
 
     model = model.to(device)
-    
-    print("connect device to model")
     
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                             batch_size=1, shuffle=False, pin_memory=True)
 
-    print("generate data loader")
-
-
-
-    for index, batch in enumerate(testloader):
-        image, label, size, name = batch
-        print (image)
-
-
-    print("evaluating model is done")
-
-    adversarial_examples = DAG_Attack(model)
+    adversarial_examples = DAG_Attack(model, testloader)
 
     print("after creating adversarial_examples")
         
