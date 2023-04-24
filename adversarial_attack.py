@@ -92,7 +92,7 @@ if __name__ == "__main__":
     print("parsing arguments is done")
 
     n_classes = args.num_classes
-    restore = torch.load(args.restore_from, map_location='cuda:2')
+    restore = torch.load(args.restore_from, map_location='cuda:3')
 
     print("restoring loading from previous model is done")
 
