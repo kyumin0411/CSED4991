@@ -125,9 +125,9 @@ if __name__ == "__main__":
     print("generate data loader")
     print("test image of data loader")
 
-    for index, batch in enumerate(testloader):
-        print(index)
-        image, label, size, name = batch
+    # for index, batch in enumerate(testloader):
+    #     print(index)
+    #     image, label, size, name = batch
         # print (image)
 
     print("before DAG_Attack")
