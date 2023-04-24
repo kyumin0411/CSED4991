@@ -29,7 +29,7 @@ BATCH_SIZE = 10
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
 def DAG_Attack(model, testloader):
-    
+    print("DAG Attack Starts")
     # Hyperparamter for DAG 
     num_iterations=20
     gamma=0.5
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     
     n_classes = args.num_classes
-    
+
     save_dir_adversarial = osp.join(f'./result_adversarial', args.file_name)
     
     if not os.path.exists(save_dir_adversarial):
@@ -126,8 +126,9 @@ if __name__ == "__main__":
     print("test image of data loader")
 
     for index, batch in enumerate(testloader):
+        print(index)
         image, label, size, name = batch
-        print (image)
+        # print (image)
 
     print("before DAG_Attack")
 
