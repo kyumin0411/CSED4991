@@ -91,8 +91,7 @@ if __name__ == "__main__":
 
     print("parsing arguments is done")
 
-    n_classes = args.num_classes
-    restore = torch.load(args.restore_from, map_location='cuda:3')
+    restore = torch.load(args.restore_from)
 
     print("restoring loading from previous model is done")
 
@@ -101,10 +100,13 @@ if __name__ == "__main__":
     print("generating model is done")
 
     model.load_state_dict(restore['state_dict'])
-
-    print("loading the model is done")
     start_iter = 0
 
+    print("loading the model is done")
+
+    
+    n_classes = args.num_classes
+    
     save_dir_adversarial = osp.join(f'./result_adversarial', args.file_name)
     
     if not os.path.exists(save_dir_adversarial):
