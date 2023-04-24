@@ -40,17 +40,21 @@ def DAG_Attack(model, testloader):
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
 
+        print(index, image) 
+        print(index, label)
+        print(index, size)
+        print(index, name)
         image = image.unsqueeze(0)
         pure_label = label.squeeze(0).numpy()
 
-        image , label = image.clone().detach().requires_grad_(True).float(), label.clone().detach().float()
-        image , label = image.to(device), label.to(device)
+        # image , label = image.clone().detach().requires_grad_(True).float(), label.clone().detach().float()
+        # image , label = image.to(device), label.to(device)
 
-        # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
+        # # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
 
-        label_oh = make_one_hot(label.long(),n_classes, device)
+        # label_oh = make_one_hot(label.long(),n_classes, device)
 
-        print("label : ", label)
+        # print("label : ", label)
         # unique_label = torch.unique(label)
         # target_class = int(random.choice(unique_label[1:]).item())
 
@@ -111,6 +115,7 @@ if __name__ == "__main__":
     
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                             batch_size=1, shuffle=False, pin_memory=True)
+
 
     adversarial_examples = DAG_Attack(model, testloader)
 
