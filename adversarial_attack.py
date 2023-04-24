@@ -50,31 +50,32 @@ def DAG_Attack(model, testloader):
 
         label_oh = make_one_hot(label.long(),n_classes, device)
 
-        unique_label = torch.unique(label)
-        target_class = int(random.choice(unique_label[1:]).item())
+        print("label : ", label)
+        # unique_label = torch.unique(label)
+        # target_class = int(random.choice(unique_label[1:]).item())
 
-        adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
-        adv_target=torch.from_numpy(adv_target).float()
+        # adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
+        # adv_target=torch.from_numpy(adv_target).float()
 
-        adv_target=adv_target.to(device)
+        # adv_target=adv_target.to(device)
 
-        _, _, _, _, _, image_iteration=DAG(model=model,
-                  image=image,
-                  ground_truth=label_oh,
-                  adv_target=adv_target,
-                  num_iterations=num_iterations,
-                  gamma=gamma,
-                  no_background=True,
-                  background_class=0,
-                  device=device,
-                  verbose=False)
+        # _, _, _, _, _, image_iteration=DAG(model=model,
+        #           image=image,
+        #           ground_truth=label_oh,
+        #           adv_target=adv_target,
+        #           num_iterations=num_iterations,
+        #           gamma=gamma,
+        #           no_background=True,
+        #           background_class=0,
+        #           device=device,
+        #           verbose=False)
 
-        if len(image_iteration) >= 1:
+        # if len(image_iteration) >= 1:
 
-            adversarial_examples.append([image_iteration[-1],
-                                         pure_label])
+        #     adversarial_examples.append([image_iteration[-1],
+        #                                  pure_label])
 
-        del image_iteration
+        # del image_iteration
 
 
     print('total {} {} images are generated'.format(len(adversarial_examples)))
