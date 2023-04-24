@@ -34,22 +34,6 @@ def DAG_Attack(model):
     num_iterations=20
     gamma=0.5
     num=15    
-    
-    device = torch.device('cuda:0')
-    model = model.to(device)
-    
-    print("connect device to model")
-    
-    testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
-                            batch_size=1, shuffle=False, pin_memory=True)
-
-    print("generate data loader")
-
-
-
-    for index, batch in enumerate(testloader):
-        image, label, size, name = batch
-        print (image)
 
     adversarial_examples = []
 
@@ -128,6 +112,26 @@ if __name__ == "__main__":
     print("making save directory path is done")
 
     model.eval()
+    print("evaluate model")
+
+    device = torch.device('cuda:0')
+
+    print("create torch device")
+
+    model = model.to(device)
+    
+    print("connect device to model")
+    
+    testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
+                            batch_size=1, shuffle=False, pin_memory=True)
+
+    print("generate data loader")
+
+
+
+    for index, batch in enumerate(testloader):
+        image, label, size, name = batch
+        print (image)
 
 
     print("evaluating model is done")
