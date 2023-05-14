@@ -18,7 +18,16 @@ SNAPSHOT_DIR = f'/home/kyumin/data/snapshots/FIFO'
 GT_DIR_FZ = '/home/kyumin/data/Foggy_Zurich'
 GT_DIR_FD = '/home/kyumin/data/Foggy_Driving'
 GT_DIR_CLINDAU = '/home/kyumin/data/Cityscapes/gtFine'
-SET = 'val'
+# SET = 'val'
+SET = 'train'
+DATA_LIST_PATH = f'./dataset/cityscapes_list/train_foggy_{BETA}.txt'
+DATA_LIST_PATH_CWSF = './dataset/cityscapes_list/train_origin.txt'
+NUM_STEPS = 100000 
+BETA = 0.005
+ITER_SIZE = 1
+BATCH_SIZE = 4
+NUM_WORKERS = 4
+DATA_DIRECTORY_CWSF = '/home/kyumin/data/Cityscapes'
 
 MODEL = 'RefineNetNew'
 
@@ -43,5 +52,13 @@ def get_arguments():
     parser.add_argument("--gt-dir-clindau", type=str, default=GT_DIR_CLINDAU)
     parser.add_argument("--devkit-dir-fz", default='/root/data1/Foggy_Zurich/lists_file_names') 
     parser.add_argument("--devkit-dir-fd", default='./lists_file_names') 
-    parser.add_argument("--devkit-dir-clindau", default='./dataset/cityscapes_list')
+    parser.add_argument("--devkit-dir-clindau", default='./dataset/cityscapes_list')    
+    parser.add_argument("--data-list-cwsf", type=str, default=DATA_LIST_PATH_CWSF)
+    parser.add_argument("--data-list", type=str, default=DATA_LIST_PATH)
+    parser.add_argument("--num-steps", type=int, default=NUM_STEPS)
+    parser.add_argument("--iter-size", type=int, default=ITER_SIZE)    
+    parser.add_argument("--batch-size", type=int, default=BATCH_SIZE)
+    parser.add_argument("--num-workers", type=int, default=NUM_WORKERS)
+    parser.add_argument("--data-dir-cwsf", type=str, default=DATA_DIRECTORY_CWSF)
+
     return parser.parse_args()
