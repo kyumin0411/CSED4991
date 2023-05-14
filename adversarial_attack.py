@@ -39,6 +39,8 @@ def DAG_Attack(model, testloader, num_classes):
     num=15    
 
     adversarial_examples = []
+    
+    pdb.set_trace()
 
     for index, batch in enumerate(testloader):
         pdb.set_trace()
