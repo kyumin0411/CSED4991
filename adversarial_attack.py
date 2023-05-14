@@ -9,7 +9,7 @@ import random
 import sys
 import os
 import os.path as osp
-import pdb;
+import pdb
 from torch.utils.data.dataset import Dataset
 from torch.utils import data
 from scipy.stats import rice
@@ -20,6 +20,7 @@ from configs.test_config_kyumin import get_arguments
 
 from model.refinenetlw import rf_lw101
 from dataset.cityscapes_dataset import cityscapesDataSet
+from dataset.paired_cityscapes import Pairedcityscapes
 
 from optparse import OptionParser
 
@@ -32,7 +33,7 @@ IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32
 def DAG_Attack(model, testloader, num_classes):
     print("DAG Attack Starts")
     # Hyperparamter for DAG 
-    
+
     num_iterations=20
     gamma=0.5
     num=15    
@@ -113,6 +114,11 @@ if __name__ == "__main__":
     device = torch.device("cuda:0")
 
     model = model.to(device)
+    pdb.set_trace()
+    cwsf_pair_loader = data.DataLoader(Pairedcityscapes(args.data_dir, args.data_dir_cwsf, args.data_list, args.data_list_cwsf,
+                                        max_iters=args.num_steps * args.iter_size * args.batch_size,
+                                        mean=IMG_MEAN, set=args.set), batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers,
+                                        pin_memory=True)
     
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                             batch_size=1, shuffle=False, pin_memory=True)
