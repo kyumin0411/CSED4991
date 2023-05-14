@@ -46,6 +46,7 @@ def DAG_Attack(model, testloader, num_classes):
         pdb.set_trace()
         image, label, size, name = batch
 
+        label[label==255] = 0
         image = image.unsqueeze(0)
         pure_label = label.squeeze(0).numpy()
 
