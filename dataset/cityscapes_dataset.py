@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import collections
 import torch
 import torchvision
+import pdb
 from torch.utils import data
 from PIL import Image
 from torchvision import transforms
@@ -86,7 +87,7 @@ class cityscapesDataSet(data.Dataset):
 
     def __getitem__(self, index):
         datafiles = self.files[index]
-
+        pdb.set_trace()
         image = Image.open(datafiles["img"]).convert('RGB')
         label = Image.open(datafiles["label"])
         name = datafiles["name"]
