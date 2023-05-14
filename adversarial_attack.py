@@ -9,6 +9,7 @@ import random
 import sys
 import os
 import os.path as osp
+import pdb;
 from torch.utils.data.dataset import Dataset
 from torch.utils import data
 from scipy.stats import rice
@@ -31,8 +32,6 @@ IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32
 def DAG_Attack(model, testloader):
     print("DAG Attack Starts")
     # Hyperparamter for DAG 
-
-    import pdb; pdb.set_trace()
     
     num_iterations=20
     gamma=0.5
@@ -41,47 +40,47 @@ def DAG_Attack(model, testloader):
     adversarial_examples = []
 
 
+    for index, batch in enumerate(testloader):
+        pdb.set_trace()
+        image, label, size, name = batch
 
-    # for index, batch in enumerate(testloader):
-    #     image, label, size, name = batch
+        print
+        image = image.unsqueeze(0)
+        pure_label = label.squeeze(0).numpy()
 
-    #     print
-    #     image = image.unsqueeze(0)
-    #     pure_label = label.squeeze(0).numpy()
+        image , label = image.clone().detach().requires_grad_(True).float(), label.clone().detach().float()
+        image , label = image.to(device), label.to(device)
 
-    #     image , label = image.clone().detach().requires_grad_(True).float(), label.clone().detach().float()
-    #     image , label = image.to(device), label.to(device)
+        # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
 
-    #     # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
+        label_oh = make_one_hot(label.long(),n_classes, device)
 
-    #     label_oh = make_one_hot(label.long(),n_classes, device)
+        print("label : ", label)
+        unique_label = torch.unique(label)
+        target_class = int(random.choice(unique_label[1:]).item())
 
-    #     print("label : ", label)
-        # unique_label = torch.unique(label)
-        # target_class = int(random.choice(unique_label[1:]).item())
+        adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
+        adv_target=torch.from_numpy(adv_target).float()
 
-        # adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
-        # adv_target=torch.from_numpy(adv_target).float()
+        adv_target=adv_target.to(device)
 
-        # adv_target=adv_target.to(device)
+        _, _, _, _, _, image_iteration=DAG(model=model,
+                  image=image,
+                  ground_truth=label_oh,
+                  adv_target=adv_target,
+                  num_iterations=num_iterations,
+                  gamma=gamma,
+                  no_background=True,
+                  background_class=0,
+                  device=device,
+                  verbose=False)
 
-        # _, _, _, _, _, image_iteration=DAG(model=model,
-        #           image=image,
-        #           ground_truth=label_oh,
-        #           adv_target=adv_target,
-        #           num_iterations=num_iterations,
-        #           gamma=gamma,
-        #           no_background=True,
-        #           background_class=0,
-        #           device=device,
-        #           verbose=False)
+        if len(image_iteration) >= 1:
 
-        # if len(image_iteration) >= 1:
+            adversarial_examples.append([image_iteration[-1],
+                                         pure_label])
 
-        #     adversarial_examples.append([image_iteration[-1],
-        #                                  pure_label])
-
-        # del image_iteration
+        del image_iteration
 
 
     print('total {} {} images are generated'.format(len(adversarial_examples)))

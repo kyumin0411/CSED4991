@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import torch.nn as nn
+import pdb
 
 def make_one_hot(labels, num_classes, device):
     '''
@@ -15,7 +16,7 @@ def make_one_hot(labels, num_classes, device):
         target : torch.Tensor on given device
         N x C x H x W, where C is class number. One-hot encoded.
     '''
-    
+    pdb.set_trace()
     labels=labels.unsqueeze(1)
     one_hot = torch.FloatTensor(labels.size(0), num_classes, labels.size(2), labels.size(3)).zero_()
     one_hot = one_hot.to(device)
