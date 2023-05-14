@@ -29,7 +29,7 @@ from optparse import OptionParser
 BATCH_SIZE = 10
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
-def DAG_Attack(model, testloader):
+def DAG_Attack(model, testloader, num_classes):
     print("DAG Attack Starts")
     # Hyperparamter for DAG 
     
@@ -44,7 +44,6 @@ def DAG_Attack(model, testloader):
         pdb.set_trace()
         image, label, size, name = batch
 
-        print
         image = image.unsqueeze(0)
         pure_label = label.squeeze(0).numpy()
 
@@ -53,9 +52,10 @@ def DAG_Attack(model, testloader):
 
         # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
 
-        label_oh = make_one_hot(label.long(),n_classes, device)
+        label_oh = torch.nn.functional.one_hot(label, num_classes)
 
-        print("label : ", label)
+        # label_oh = make_one_hot(label.long(),n_classes, device)
+
         unique_label = torch.unique(label)
         target_class = int(random.choice(unique_label[1:]).item())
 
@@ -118,7 +118,7 @@ if __name__ == "__main__":
                             batch_size=1, shuffle=False, pin_memory=True)
 
 
-    adversarial_examples = DAG_Attack(model, testloader)
+    adversarial_examples = DAG_Attack(model, testloader, n_classes)
 
     print("after creating adversarial_examples")
         
