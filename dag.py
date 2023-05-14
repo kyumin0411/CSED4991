@@ -7,6 +7,7 @@ adapted from https://github.com/IFL-CAMP/dense_adversarial_generation_pytorch
 '''
 import torch
 from util import make_one_hot
+import pdb
 
 
 def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_background=True,background_class=0,device='cuda:0',verbose=False):
@@ -34,8 +35,7 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
         prediction_iteration: List of prediction per iteration as numpy array
         image_iteration: List of image per iteration as numpy array
     '''
-
-    print("DAG algorithm")
+    pdb.set_trace()
 
     noise_total=[]
     noise_iteration=[]
@@ -47,12 +47,14 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
     _,predictions_orig=torch.max(logits,1)
     predictions_orig=make_one_hot(predictions_orig,logits.shape[1],device)
     
+    pdb.set_trace()
     if(no_background):
         background=torch.zeros(logits.shape)
         background[:,background_class,:,:]=torch.ones((background.shape[2],background.shape[3]))
         background=background.to(device)
     
     for a in range(num_iterations):
+        pdb.set_trace()
         output=model(image)
         _,predictions=torch.max(output,1)
         prediction_iteration.append(predictions[0].cpu().numpy())
