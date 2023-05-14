@@ -120,6 +120,8 @@ if __name__ == "__main__":
                                         mean=IMG_MEAN, set=args.set), batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers,
                                         pin_memory=True)
     
+    sample_data = next(iter(cwsf_pair_loader))
+    
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                             batch_size=1, shuffle=False, pin_memory=True)
 
