@@ -40,7 +40,6 @@ def DAG_Attack(model, testloader, num_classes):
 
     adversarial_examples = []
 
-
     for index, batch in enumerate(testloader):
         pdb.set_trace()
         image, label, size, name = batch
@@ -114,10 +113,10 @@ if __name__ == "__main__":
     device = torch.device("cuda:0")
 
     model = model.to(device)
-    cwsf_pair_loader = data.DataLoader(Pairedcityscapes(args.data_dir, args.data_dir_cwsf, args.data_list, args.data_list_cwsf,
-                                        max_iters=args.num_steps * args.iter_size * args.batch_size,
-                                        mean=IMG_MEAN, set=args.set), batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers,
-                                        pin_memory=True)
+    # cwsf_pair_loader = data.DataLoader(Pairedcityscapes(args.data_dir, args.data_dir_cwsf, args.data_list, args.data_list_cwsf,
+    #                                     max_iters=args.num_steps * args.iter_size * args.batch_size,
+    #                                     mean=IMG_MEAN, set=args.set), batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers,
+    #                                     pin_memory=True)
     pdb.set_trace()
 
     # sample_data = next(iter(cwsf_pair_loader))
@@ -126,7 +125,7 @@ if __name__ == "__main__":
                             batch_size=1, shuffle=False, pin_memory=True)
 
 
-    adversarial_examples = DAG_Attack(model, cwsf_pair_loader, n_classes)
+    adversarial_examples = DAG_Attack(model, testloader, n_classes)
 
     print("after creating adversarial_examples")
         
