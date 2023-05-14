@@ -6,14 +6,14 @@ BETA = 0.005
 BATCH_SIZE = 4
 ITER_SIZE = 1
 NUM_WORKERS = 4
-DATA_DIRECTORY ='/root/data1'
+DATA_DIRECTORY ='/home/kyumin/data'
 DATA_LIST_PATH = f'./dataset/cityscapes_list/train_foggy_{BETA}.txt'
 DATA_CITY_PATH = './dataset/cityscapes_list/clear_lindau.txt'
 INPUT_SIZE = '2048,1024'
-DATA_DIRECTORY_CWSF = '/root/data1/Cityscapes'
+DATA_DIRECTORY_CWSF = '/home/kyumin/data/Cityscapes'
 DATA_LIST_PATH_CWSF = './dataset/cityscapes_list/train_origin.txt'
-DATA_LIST_RF = '/root/data1/Foggy_Zurich/lists_file_names/RGB_sum_filenames.txt'
-DATA_DIR = '/root/data1'
+DATA_LIST_RF = '/home/kyumin/data/Foggy_Zurich/lists_file_names/RGB_sum_filenames.txt'
+DATA_DIR = '/home/kyumin/data'
 INPUT_SIZE_RF = '1920,1080'
 NUM_CLASSES = 19 
 NUM_STEPS = 100000 
@@ -22,7 +22,7 @@ RANDOM_SEED = 1234
 RESTORE_FROM = 'no_model'
 RESTORE_FROM_fogpass = 'no_model'
 SAVE_PRED_EVERY = 100
-SNAPSHOT_DIR = f'/root/data1/snapshots/FIFO_model'   
+SNAPSHOT_DIR = f'/home/kyumin/data/snapshots/FIFO_model'   
 
 SET = 'train'
 
