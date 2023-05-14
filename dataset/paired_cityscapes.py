@@ -11,6 +11,7 @@ from os.path import join
 import scipy.misc as m
 import torchvision.transforms as transforms
 import torchvision.transforms.functional as TF
+import pdb
 
 class Pairedcityscapes(data.Dataset):
     colors = [  
@@ -113,6 +114,8 @@ class Pairedcityscapes(data.Dataset):
     
     def __getitem__(self, index):
         datafiles = self.files[index]
+
+        pdb.set_trace()
       
         src_image = Image.open(datafiles["src_img"]).convert('RGB')
         trg_image = Image.open(datafiles["trg_img"]).convert('RGB')
