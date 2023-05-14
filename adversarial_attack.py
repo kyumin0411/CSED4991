@@ -120,13 +120,13 @@ if __name__ == "__main__":
                                         pin_memory=True)
     pdb.set_trace()
 
-    sample_data = next(iter(cwsf_pair_loader))
+    # sample_data = next(iter(cwsf_pair_loader))
     
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                             batch_size=1, shuffle=False, pin_memory=True)
 
 
-    adversarial_examples = DAG_Attack(model, testloader, n_classes)
+    adversarial_examples = DAG_Attack(model, cwsf_pair_loader, n_classes)
 
     print("after creating adversarial_examples")
         
