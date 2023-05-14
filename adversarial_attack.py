@@ -54,9 +54,7 @@ def DAG_Attack(model, testloader, num_classes):
 
         # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
 
-        label_oh = torch.nn.functional.one_hot(label, num_classes)
-
-        # label_oh = make_one_hot(label.long(),n_classes, device)
+        label_oh = make_one_hot(label.long(),n_classes, device)
 
         unique_label = torch.unique(label)
         target_class = int(random.choice(unique_label[1:]).item())
