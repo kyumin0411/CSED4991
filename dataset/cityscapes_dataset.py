@@ -55,6 +55,7 @@ class cityscapesDataSet(data.Dataset):
         for name in self.img_ids:
             img_file = osp.join(self.root, "leftImg8bit/%s/%s" % (self.set, name))
             label_file = osp.join(self.root, "gtFine/%s/%s" % (self.set, name[:-15]+'gtFine_labelIds.png'))
+            pdb.set_trace()
             self.files.append({
                 "img": img_file,
                 "label": label_file,
