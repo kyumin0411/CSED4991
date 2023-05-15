@@ -23,6 +23,7 @@ from dataset.cityscapes_dataset import cityscapesDataSet
 from dataset.paired_cityscapes import Pairedcityscapes
 
 from optparse import OptionParser
+from torch.autograd import Variable
 
 #from model import UNet, SegNet, DenseNet
 # from skimage.measure import compare_ssim as ssim
@@ -47,11 +48,14 @@ def DAG_Attack(model, testloader, num_classes):
         image, label, size, name = batch
 
         label[label==255] = 0
-        image = image.unsqueeze(0)
+        # image = image.unsqueeze(0)
         pure_label = label.squeeze(0).numpy()
 
-        image , label = image.clone().detach().requires_grad_(True).float(), label.clone().detach().float()
-        image , label = image.to(device), label.to(device)
+        # image = image.clone().detach().requires_grad_(True).float()
+        label = label.clone().detach().float()
+        # image = image.to(device)
+        label = label.to(device)
+        image = Variable(image).to(device)
 
         # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
 
