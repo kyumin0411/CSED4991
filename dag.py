@@ -44,13 +44,12 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
     background=None
     logits=model(image)
     orig_image=image
-    _,predictions_orig=torch.max(logits,1)
-    pdb.set_trace()
-    predictions_orig=make_one_hot(predictions_orig,logits.shape[1],device)
+    _,predictions_orig=torch.max(logits[0],1)
+    predictions_orig=make_one_hot(predictions_orig,logits[0].shape[1],device)
     
     pdb.set_trace()
     if(no_background):
-        background=torch.zeros(logits.shape)
+        background=torch.zeros(logits[0].shape)
         background[:,background_class,:,:]=torch.ones((background.shape[2],background.shape[3]))
         background=background.to(device)
     
@@ -59,7 +58,7 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
         output=model(image)
         _,predictions=torch.max(output,1)
         prediction_iteration.append(predictions[0].cpu().numpy())
-        predictions=make_one_hot(predictions,logits.shape[1],device)
+        predictions=make_one_hot(predictions,logits[0].shape[1],device)
 
         condition1=torch.eq(predictions,ground_truth)
         condition=condition1
