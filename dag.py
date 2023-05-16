@@ -35,13 +35,13 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
         prediction_iteration: List of prediction per iteration as numpy array
         image_iteration: List of image per iteration as numpy array
     '''
-    pdb.set_trace()
 
     noise_total=[]
     noise_iteration=[]
     prediction_iteration=[]
     image_iteration=[]
     background=None
+    pdb.set_trace()
     logits=model(image)[5]
     orig_image=image
     _,predictions_orig=torch.max(logits,1)
@@ -60,6 +60,7 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
         prediction_iteration.append(predictions[0].cpu().numpy())
         predictions=make_one_hot(predictions,logits.shape[1],device)
 
+        pdb.set_trace()
         condition1=torch.eq(predictions,ground_truth)
         condition=condition1
        
@@ -68,6 +69,7 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
             condition=torch.mul(condition1,condition2)
         condition=condition.float()
 
+        pdb.set_trace()
         if(condition.sum()==0):
             print("Condition Reached")
             image=None
@@ -78,6 +80,7 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
         #Getting the values of the original output
         clean_log=torch.mul(output,ground_truth)
 
+        pdb.set_trace()
         #Finding r_m
         adv_direction=adv_log-clean_log
         r_m=torch.mul(adv_direction,condition)
@@ -93,6 +96,7 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
         #Calculating Magnitude of the gradient
         r_m_grad_mag=r_m_grad_calc.norm()
         
+        pdb.set_trace()
         if(r_m_grad_mag==0):
             print("Condition Reached, no gradient")
             #image=None
@@ -100,6 +104,7 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
         #Calculating final value of r_m
         r_m_norm=(gamma/r_m_grad_mag)*r_m_grad_calc
 
+        pdb.set_trace()
         #if no_background:
         #if False:
         if no_background is False:
@@ -107,6 +112,7 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
             condition_image=condition_image.unsqueeze(1)
             r_m_norm=torch.mul(r_m_norm,condition_image)
 
+        pdb.set_trace()
         #Updating the image
         #print("r_m_norm : ",torch.unique(r_m_norm))
         image=torch.clamp((image+r_m_norm),0,1)
@@ -114,6 +120,7 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
         noise_total.append((image-orig_image)[0][0].detach().cpu().numpy())
         noise_iteration.append(r_m_norm[0][0].cpu().numpy())
 
+        pdb.set_trace()
         if verbose:
             print("Iteration ",a)
             print("Change to the image is ",r_m_norm.sum())

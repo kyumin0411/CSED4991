@@ -41,10 +41,10 @@ def DAG_Attack(model, testloader, num_classes):
 
     adversarial_examples = []
     
-    pdb.set_trace()
+    # pdb.set_trace()
 
     for index, batch in enumerate(testloader):
-        pdb.set_trace()
+        # pdb.set_trace()
         image, label, size, name = batch
 
         label[label==255] = 0
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     #                                     max_iters=args.num_steps * args.iter_size * args.batch_size,
     #                                     mean=IMG_MEAN, set=args.set), batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers,
     #                                     pin_memory=True)
-    pdb.set_trace()
+    # pdb.set_trace()
 
     # sample_data = next(iter(cwsf_pair_loader))
     
