@@ -48,12 +48,12 @@ def DAG_Attack(model, testloader, num_classes):
         image, label, size, name = batch
 
         label[label==255] = 0
-        # image = image.unsqueeze(0)
+        image = image.unsqueeze(0)
         pure_label = label.squeeze(0).numpy()
 
-        # image = image.clone().detach().requires_grad_(True).float()
+        image = image.clone().detach().requires_grad_(True).float()
         label = label.clone().detach().float()
-        # image = image.to(device)
+        image = image.to(device)
         label = label.to(device)
         image = Variable(image).to(device)
 

@@ -48,7 +48,7 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
     _,predictions_orig=torch.max(logits,1)
     predictions_orig=make_one_hot(predictions_orig,logits.shape[1],device)
 
-    image.requires_grad_()
+    # image.requires_grad_()
     
     pdb.set_trace()
     if(no_background):
