@@ -48,6 +48,7 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
     _,predictions_orig=torch.max(logits,1)
     predictions_orig=make_one_hot(predictions_orig,logits.shape[1],device)
 
+    image.requires_grad_()
     
     pdb.set_trace()
     if(no_background):
@@ -92,7 +93,8 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
         r_m_sum=r_m.sum()
         r_m_sum.requires_grad_()
         #Finding gradient with respect to image
-        r_m_grad=torch.autograd.grad(r_m_sum,image,retain_graph=True)
+        # r_m_grad=torch.autograd.grad(r_m_sum,image,retain_graph=True)
+        r_m_grad=torch.autograd.grad(r_m_sum,image,retain_graph=True,allow_unused=True)
         #Saving gradient for calculation
         r_m_grad_calc=r_m_grad[0]
         
