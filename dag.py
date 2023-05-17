@@ -120,7 +120,7 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
         pdb.set_trace()
         #Updating the image
         #print("r_m_norm : ",torch.unique(r_m_norm))
-        image=torch.clamp((image+r_m_norm),0,1)
+        image=image + torch.clamp(r_m_norm,0,1)
         image_iteration.append(image[0][0].detach().cpu().numpy())
         noise_total.append((image-orig_image)[0][0].detach().cpu().numpy())
         noise_iteration.append(r_m_norm[0][0].cpu().numpy())
