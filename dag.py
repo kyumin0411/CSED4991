@@ -11,6 +11,9 @@ import pdb
 
 ###
 import pickle
+import numpy as np
+import PIL
+from PIL import Image
 
 
 image_number = 1
@@ -45,7 +48,8 @@ def DAG(model,model_name,image_name,image,ground_truth,adv_target,interp, pure_l
     noise_total=[]
     noise_iteration=[]
     prediction_iteration=[]
-    image_iteration=[]
+    adversarial_image=None
+    # image_iteration=[]
     background=None
     # pdb.set_trace()
     logits_feature5=model(image)[5]
@@ -126,7 +130,8 @@ def DAG(model,model_name,image_name,image,ground_truth,adv_target,interp, pure_l
         #Updating the image
         #print("r_m_norm : ",torch.unique(r_m_norm))
         image=image + torch.clamp(r_m_norm,0,1)
-        image_iteration.append(image[0][0].detach().cpu().numpy())
+        adversarial_image = image[0][0]
+        # image_iteration.append(image[0][0].detach().cpu().numpy())
         noise_total.append((image-orig_image)[0][0].detach().cpu().numpy())
         noise_iteration.append(r_m_norm[0][0].cpu().numpy())
 
@@ -147,11 +152,15 @@ def DAG(model,model_name,image_name,image,ground_truth,adv_target,interp, pure_l
         print("adversarial condition : ", condition1.float().sum())
         print("condition is ", cond.sum())
 
-    data_path = "../data/adversarial" + model_name + "_" + image_name[0].split('/')[1]
-
-    if len(image_iteration) >= 1:
-        with open(data_path, 'wb') as fp:
-            pickle.dump([image_iteration[-1],pure_label], fp)
+    data_path = "../data/adversarial/" + model_name + "_" + image_name[0].split('/')[1]
 
 
-    return image, logits, noise_total, noise_iteration, prediction_iteration, image_iteration
+    if adversarial_image!=None:
+        np_arr = np.array(adversarial_image, dtype=np.uint8)
+        img = PIL.Image.fromarray(np_arr)
+        img.save(data_path)
+        # with open(data_path, 'wb') as fp:
+        #     pickle.dump(adversarial_image, fp)
+
+
+    return image, logits, noise_total, noise_iteration, prediction_iteration, adversarial_image

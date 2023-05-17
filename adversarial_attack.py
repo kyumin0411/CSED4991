@@ -72,7 +72,7 @@ def DAG_Attack(model, testloader, num_classes):
 
         interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
 
-        _, _, _, _, _, image_iteration=DAG(model=model,
+        _, _, _, _, _, adversarial_image=DAG(model=model,
                   model_name="FIFO",
                   image_name=name,
                   image=image,
@@ -87,10 +87,10 @@ def DAG_Attack(model, testloader, num_classes):
                   verbose=True,
                   pure_label=pure_label)
 
-        if len(image_iteration) >= 1:
+        if adversarial_image!=None:
 
-            adversarial_examples.append([image_iteration[-1],
-                                         pure_label])
+            adversarial_examples.append([adversarial_image,
+                                            pure_label])
 
         del image_iteration
 
