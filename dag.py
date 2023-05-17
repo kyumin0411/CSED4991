@@ -9,6 +9,8 @@ import torch
 from util import make_one_hot
 import pdb
 
+image_number = 1
+
 def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07,no_background=True,background_class=0,device='cuda:0',verbose=False):
     '''
     Generates adversarial example for a given Image
@@ -47,6 +49,7 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
     orig_image=image
     _,predictions_orig=torch.max(logits,1)
     predictions_orig=make_one_hot(predictions_orig,logits.shape[1],device)
+    orig_condition=torch.eq(predictions_orig,ground_truth)
     
     if(no_background):
         background=torch.zeros(logits.shape)
@@ -124,13 +127,20 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
         noise_iteration.append(r_m_norm[0][0].cpu().numpy())
 
         # pdb.set_trace()
-        if verbose:
-            print("Iteration ",a)
-            print("Change to the image is ",r_m_norm.sum())
-            print("Magnitude of grad is ",r_m_grad_mag)
-            print("Condition 1 ",condition1.sum())
-            if no_background:
-                print("Condition 2 ",condition2.sum())
-                print("Condition is", cond.sum()) 
+        # if verbose:
+        #     print("Iteration ",a)
+        #     print("Change to the image is ",r_m_norm.sum())
+        #     print("Magnitude of grad is ",r_m_grad_mag)
+        #     print("Condition 1 ",condition1.sum())
+        #     if no_background:
+        #         print("Condition 2 ",condition2.sum())
+        #         print("Condition is", cond.sum()) 
+
+    if verbose:
+        print("image number : ", image_number)
+        print("original condition : ", orig_condition)
+        print("adversarial condition : ", condition1)
+        print("condition is ", cond.sum())
+
 
     return image, logits, noise_total, noise_iteration, prediction_iteration, image_iteration
