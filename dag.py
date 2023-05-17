@@ -15,7 +15,7 @@ import pickle
 
 image_number = 1
 
-def DAG(model,image,ground_truth,adv_target,interp, pure_label, num_iterations=20,gamma=0.07,no_background=True,background_class=0,device='cuda:0',verbose=False):
+def DAG(model,model_name,image_name,image,ground_truth,adv_target,interp, pure_label, num_iterations=20,gamma=0.07,no_background=True,background_class=0,device='cuda:0',verbose=False):
     '''
     Generates adversarial example for a given Image
     
@@ -147,7 +147,9 @@ def DAG(model,image,ground_truth,adv_target,interp, pure_label, num_iterations=2
         print("adversarial condition : ", condition1.float().sum())
         print("condition is ", cond.sum())
 
-    with open('../data/adversarial_example', 'wb') as fp:
+    data_path = "../data/" + model_name + "_" + image_name + ".pickle"
+
+    with open(data_path, 'wb') as fp:
         pickle.dump([image_iteration[-1],pure_label], fp)
 
 
