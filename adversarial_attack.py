@@ -49,13 +49,14 @@ def DAG_Attack(model, testloader, num_classes):
         
         pdb.set_trace()
         # image = image.unsqueeze(0)
+        # image = image.to(device)
         pure_label = label.squeeze(0).numpy()
 
-        # image = image.clone().detach().requires_grad_(True).float()
+        image = image.clone().detach().float()
         label = label.clone().detach().float()
-        # image = image.to(device)
         label = label.to(device)
         image = Variable(image).to(device)
+        image.requires_grad_()
 
         # Change labels from [batch_size, height, width] to [batch_size, num_classes, height, width]
 
