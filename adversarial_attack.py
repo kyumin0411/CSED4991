@@ -69,12 +69,15 @@ def DAG_Attack(model, testloader, num_classes):
 
         adv_target=adv_target.to(device)
 
+        interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
+
         _, _, _, _, _, image_iteration=DAG(model=model,
                   image=image,
                   ground_truth=label_oh,
                   adv_target=adv_target,
                   num_iterations=num_iterations,
                   gamma=gamma,
+                  interp=interp,
                   no_background=True,
                   background_class=0,
                   device=device,

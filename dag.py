@@ -8,10 +8,8 @@ adapted from https://github.com/IFL-CAMP/dense_adversarial_generation_pytorch
 import torch
 from util import make_one_hot
 import pdb
-import torch.nn as nn
 
-
-def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_background=True,background_class=0,device='cuda:0',verbose=False):
+def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07,no_background=True,background_class=0,device='cuda:0',verbose=False):
     '''
     Generates adversarial example for a given Image
     
@@ -36,7 +34,7 @@ def DAG(model,image,ground_truth,adv_target,num_iterations=20,gamma=0.07,no_back
         prediction_iteration: List of prediction per iteration as numpy array
         image_iteration: List of image per iteration as numpy array
     '''
-    interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
+    
 
     noise_total=[]
     noise_iteration=[]
