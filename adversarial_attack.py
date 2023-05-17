@@ -47,7 +47,7 @@ def DAG_Attack(model, testloader, num_classes):
         image, label, size, name = batch
         label[label==255] = 0
         
-        pdb.set_trace()
+        # pdb.set_trace()
         # image = image.unsqueeze(0)
         # image = image.to(device)
         pure_label = label.squeeze(0).numpy()
@@ -82,7 +82,7 @@ def DAG_Attack(model, testloader, num_classes):
                   no_background=True,
                   background_class=0,
                   device=device,
-                  verbose=False)
+                  verbose=True)
 
         if len(image_iteration) >= 1:
 
@@ -131,7 +131,8 @@ if __name__ == "__main__":
     adversarial_examples = DAG_Attack(model, testloader, n_classes)
 
     print("after creating adversarial_examples")
-        
+    
+    pdb.set_trace()
     # save adversarial examples([adversarial examples, labels])
     with open('../data/adversarial_example', 'wb') as fp:
         pickle.dump(adversarial_examples, fp)

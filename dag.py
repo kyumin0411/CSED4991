@@ -53,7 +53,7 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
         background[:,background_class,:,:]=torch.ones((background.shape[2],background.shape[3]))
         background=background.to(device)
     
-    pdb.set_trace()
+    # pdb.set_trace()
     for a in range(num_iterations):
         # pdb.set_trace()
         output_feature5=model(image)[5]
@@ -62,8 +62,6 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
         prediction_iteration.append(predictions[0].cpu().numpy())
         predictions=make_one_hot(predictions,logits.shape[1],device)
 
-        if(a==199):
-            pdb.set_trace()
         # pdb.set_trace()
         condition1=torch.eq(predictions,ground_truth)
         cond=condition1

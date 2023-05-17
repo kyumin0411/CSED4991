@@ -116,7 +116,7 @@ class Pairedcityscapes(data.Dataset):
     def __getitem__(self, index):
         datafiles = self.files[index]
 
-        pdb.set_trace()
+        # pdb.set_trace()
       
         src_image = Image.open(datafiles["src_img"]).convert('RGB')
         trg_image = Image.open(datafiles["trg_img"]).convert('RGB')
