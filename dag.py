@@ -147,7 +147,7 @@ def DAG(model,model_name,image_name,image,ground_truth,adv_target,interp, pure_l
         print("adversarial condition : ", condition1.float().sum())
         print("condition is ", cond.sum())
 
-    data_path = "../data/" + model_name + "_" + image_name + ".pickle"
+    data_path = "../data/" + model_name + "_" + image_name[0]
 
     with open(data_path, 'wb') as fp:
         pickle.dump([image_iteration[-1],pure_label], fp)
