@@ -35,7 +35,7 @@ def DAG_Attack(model, testloader, num_classes):
     print("DAG Attack Starts")
     # Hyperparamter for DAG 
 
-    num_iterations=20
+    num_iterations=200
     gamma=0.5
     num=15    
 
@@ -122,13 +122,7 @@ if __name__ == "__main__":
     device = torch.device("cuda:0")
 
     model = model.to(device)
-    # cwsf_pair_loader = data.DataLoader(Pairedcityscapes(args.data_dir, args.data_dir_cwsf, args.data_list, args.data_list_cwsf,
-    #                                     max_iters=args.num_steps * args.iter_size * args.batch_size,
-    #                                     mean=IMG_MEAN, set=args.set), batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers,
-    #                                     pin_memory=True)
     # pdb.set_trace()
-
-    # sample_data = next(iter(cwsf_pair_loader))
     
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                             batch_size=1, shuffle=False, pin_memory=True)

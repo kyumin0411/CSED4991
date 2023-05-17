@@ -47,24 +47,24 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
     orig_image=image
     _,predictions_orig=torch.max(logits,1)
     predictions_orig=make_one_hot(predictions_orig,logits.shape[1],device)
-
-    # image.requires_grad_()
     
-    pdb.set_trace()
     if(no_background):
         background=torch.zeros(logits.shape)
         background[:,background_class,:,:]=torch.ones((background.shape[2],background.shape[3]))
         background=background.to(device)
     
+    pdb.set_trace()
     for a in range(num_iterations):
-        pdb.set_trace()
+        # pdb.set_trace()
         output_feature5=model(image)[5]
         output = interp(output_feature5)
         _,predictions=torch.max(output,1)
         prediction_iteration.append(predictions[0].cpu().numpy())
         predictions=make_one_hot(predictions,logits.shape[1],device)
 
-        pdb.set_trace()
+        if(a==199):
+            pdb.set_trace()
+        # pdb.set_trace()
         condition1=torch.eq(predictions,ground_truth)
         cond=condition1
        
@@ -101,7 +101,7 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
         #Calculating Magnitude of the gradient
         r_m_grad_mag=r_m_grad_calc.norm()
         
-        pdb.set_trace()
+        # pdb.set_trace()
         if(r_m_grad_mag==0):
             print("Condition Reached, no gradient")
             #image=None
