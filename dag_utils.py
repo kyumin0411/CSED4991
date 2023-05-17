@@ -17,7 +17,6 @@ def generate_target(y_test, target_class = 13, width = 256, height = 256):
 
     dilated_image = scipy.ndimage.binary_dilation(y_target[0, target_class, :, :], iterations=6).astype(y_test.dtype)
 
-    pdb.set_trace()
     for i in range(width):
         for j in range(height):
             y_target[0, target_class, i, j] = dilated_image[i,j]
@@ -34,7 +33,6 @@ def generate_target(y_test, target_class = 13, width = 256, height = 256):
                 else:
                     y_target[0, k[0], i, j] = 0.
 
-    pdb.set_trace()
     return y_target
 
 def generate_target_swap(y_test):
