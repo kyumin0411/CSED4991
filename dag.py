@@ -65,15 +65,15 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
 
         pdb.set_trace()
         condition1=torch.eq(predictions,ground_truth)
-        condition=condition1
+        cond=condition1
        
         if no_background:
             condition2=(ground_truth!=background)
-            condition=torch.mul(condition1,condition2)
-        condition=condition.float()
+            cond=torch.mul(condition1,condition2)
+        cond=cond.float()
 
         pdb.set_trace()
-        if(condition.sum()==0):
+        if(cond.sum()==0):
             print("Condition Reached")
             image=None
             break
@@ -86,7 +86,7 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
         pdb.set_trace()
         #Finding r_m
         adv_direction=adv_log-clean_log
-        r_m=torch.mul(adv_direction,condition)
+        r_m=torch.mul(adv_direction,cond)
         r_m.requires_grad_()
         #Summation
         r_m_sum=r_m.sum()
@@ -111,7 +111,7 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
         #if no_background:
         #if False:
         if no_background is False:
-            condition_image=condition.sum(dim=1)
+            condition_image=cond.sum(dim=1)
             condition_image=condition_image.unsqueeze(1)
             r_m_norm=torch.mul(r_m_norm,condition_image)
 
@@ -131,6 +131,6 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
             print("Condition 1 ",condition1.sum())
             if no_background:
                 print("Condition 2 ",condition2.sum())
-                print("Condition is", condition.sum()) 
+                print("Condition is", cond.sum()) 
 
     return image, logits, noise_total, noise_iteration, prediction_iteration, image_iteration
