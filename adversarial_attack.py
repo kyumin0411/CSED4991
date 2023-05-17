@@ -82,7 +82,8 @@ def DAG_Attack(model, testloader, num_classes):
                   no_background=True,
                   background_class=0,
                   device=device,
-                  verbose=True)
+                  verbose=True,
+                  pure_label=pure_label)
 
         if len(image_iteration) >= 1:
 

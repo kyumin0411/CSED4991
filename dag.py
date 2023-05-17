@@ -9,9 +9,13 @@ import torch
 from util import make_one_hot
 import pdb
 
+###
+import pickle
+
+
 image_number = 1
 
-def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07,no_background=True,background_class=0,device='cuda:0',verbose=False):
+def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07,no_background=True,background_class=0,device='cuda:0',verbose=False, pure_label):
     '''
     Generates adversarial example for a given Image
     
@@ -136,11 +140,15 @@ def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07
         #         print("Condition 2 ",condition2.sum())
         #         print("Condition is", cond.sum()) 
 
+    pdb.set_trace()
     if verbose:
         print("image number : ", image_number)
-        print("original condition : ", orig_condition)
-        print("adversarial condition : ", condition1)
+        print("original condition : ", orig_condition.float().sum())
+        print("adversarial condition : ", condition1.float().sum())
         print("condition is ", cond.sum())
+
+    with open('../data/adversarial_example', 'wb') as fp:
+        pickle.dump([image_iteration[-1],pure_label], fp)
 
 
     return image, logits, noise_total, noise_iteration, prediction_iteration, image_iteration
