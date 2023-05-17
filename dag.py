@@ -15,7 +15,7 @@ import pickle
 
 image_number = 1
 
-def DAG(model,image,ground_truth,adv_target,interp, num_iterations=20,gamma=0.07,no_background=True,background_class=0,device='cuda:0',verbose=False, pure_label):
+def DAG(model,image,ground_truth,adv_target,interp, pure_label, num_iterations=20,gamma=0.07,no_background=True,background_class=0,device='cuda:0',verbose=False):
     '''
     Generates adversarial example for a given Image
     
