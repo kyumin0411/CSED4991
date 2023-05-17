@@ -147,10 +147,11 @@ def DAG(model,model_name,image_name,image,ground_truth,adv_target,interp, pure_l
         print("adversarial condition : ", condition1.float().sum())
         print("condition is ", cond.sum())
 
-    data_path = "../data/" + model_name + "_" + image_name[0]
+    data_path = "../data/adversarial" + model_name + "_" + image_name[0].split('/')[1]
 
-    with open(data_path, 'wb') as fp:
-        pickle.dump([image_iteration[-1],pure_label], fp)
+    if len(image_iteration) >= 1:
+        with open(data_path, 'wb') as fp:
+            pickle.dump([image_iteration[-1],pure_label], fp)
 
 
     return image, logits, noise_total, noise_iteration, prediction_iteration, image_iteration
