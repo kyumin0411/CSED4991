@@ -13,7 +13,7 @@ import pdb
 from torch.utils.data.dataset import Dataset
 from torch.utils import data
 from scipy.stats import rice
-from dag import DAG
+from dag_medical import DAG
 from dag_utils import generate_target, generate_target_swap
 from util import make_one_hot
 from configs.test_config_kyumin import get_arguments
