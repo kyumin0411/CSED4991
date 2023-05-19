@@ -72,6 +72,7 @@ def DAG_Attack(model, testloader, num_classes):
 
         interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
 
+        pdb.set_trace()
         _, _, _, _, _, adversarial_image=DAG(model=model,
                   model_name="FIFO",
                   image_name=name,
