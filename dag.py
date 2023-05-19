@@ -1,8 +1,7 @@
 from typing import Optional
 
 import torch
-from adv_lib.utils.losses import difference_of_logits
-from adv_lib.utils.visdom_logger import VisdomLogger
+from util import difference_of_logits
 from torch import Tensor, nn
 from torch.autograd import grad
 import pdb
@@ -22,7 +21,7 @@ def DAG(model,
         p: float = float('inf'),
         device='cuda:0',
         verbose=False,
-        callback: Optional[VisdomLogger] = None) -> Tensor:
+        callback = None) -> Tensor:
     """DAG attack from https://arxiv.org/abs/1703.08603"""
     # device = inputs.device
     pdb.set_trace()
@@ -93,11 +92,11 @@ def DAG(model,
 
         r[active_inputs] = r_
 
-    if verbose:
-        print("image number : ", image_number)
-        print("original condition : ", orig_condition.float().sum())
-        print("adversarial condition : ", condition1.float().sum())
-        print("condition is ", cond.sum())
+    # if verbose:
+    #     print("image number : ", image_number)
+    #     print("original condition : ", orig_condition.float().sum())
+    #     print("adversarial condition : ", condition1.float().sum())
+    #     print("condition is ", cond.sum())
 
     data_path = "../data/adversarial/" + model_name + "_" + image_name[0].split('/')[1]
 

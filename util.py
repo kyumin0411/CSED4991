@@ -22,3 +22,12 @@ def make_one_hot(labels, num_classes, device):
     one_hot = one_hot.to(device)
     target = one_hot.scatter_(1, labels.data, 1) 
     return target
+
+
+def difference_of_logits(logits, labels, labels_infhot = None):
+    if labels_infhot is None:
+        labels_infhot = torch.zeros_like(logits).scatter_(1, labels.unsqueeze(1), float('inf'))
+
+    class_logits = logits.gather(1, labels.unsqueeze(1)).squeeze(1)
+    other_logits = (logits - labels_infhot).amax(dim=1)
+    return class_logits - other_logits
