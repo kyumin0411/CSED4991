@@ -32,7 +32,7 @@ def DAG(model,
     multiplier = 1
 
     # Setup variables
-    r = torch.zeros_like(image)
+    r_m = torch.zeros_like(image)
 
     pdb.set_trace()
     # Init trackers
@@ -44,7 +44,7 @@ def DAG(model,
         pdb.set_trace()
         active_inputs = ~adv_found
         inputs_ = image[active_inputs]
-        r_ = r[active_inputs]
+        r_ = r_m[active_inputs]
         r_.requires_grad_(True)
 
         pdb.set_trace()
@@ -75,7 +75,7 @@ def DAG(model,
         pdb.set_trace()
         if callback:
             callback.accumulate_line('dl', i, dl[active_masks].mean(), title=f'DAG (p={p}, gamma={gamma}) - DL')
-            callback.accumulate_line(f'L{p}', i, r.flatten(1).norm(p=p, dim=1).mean(), title=f'DAG (p={p}, gamma={gamma}) - Norm')
+            callback.accumulate_line(f'L{p}', i, r_m.flatten(1).norm(p=p, dim=1).mean(), title=f'DAG (p={p}, gamma={gamma}) - Norm')
             callback.accumulate_line('adv%', i, adv_percent.mean(), title=f'DAG (p={p}, gamma={gamma}) - Adv percent')
 
             if (i + 1) % (num_iterations // 20) == 0 or (i + 1) == num_iterations:
@@ -90,7 +90,7 @@ def DAG(model,
         r_grad.div_(batch_view(r_grad.flatten(1).norm(p=p, dim=1).clamp_min_(1e-8)))
         r_.data.sub_(r_grad, alpha=gamma)
 
-        r[active_inputs] = r_
+        r_m[active_inputs] = r_
 
     # if verbose:
     #     print("image number : ", image_number)
