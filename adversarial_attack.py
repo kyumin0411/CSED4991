@@ -35,7 +35,7 @@ def DAG_Attack(model, testloader, num_classes):
     print("DAG Attack Starts")
     # Hyperparamter for DAG 
 
-    num_iterations=200
+    num_iterations=500
     gamma=0.5
     num=15    
 
@@ -77,15 +77,16 @@ def DAG_Attack(model, testloader, num_classes):
                   image_name=name,
                   image=image,
                   ground_truth=label_oh,
-                  adv_target=adv_target,
+                #   adv_target=adv_target,
                   num_iterations=num_iterations,
                   gamma=gamma,
                   interp=interp,
-                  no_background=True,
-                  background_class=0,
+                #   no_background=True,
+                #   background_class=0,
                   device=device,
-                  verbose=True,
-                  pure_label=pure_label)
+                  verbose=True
+                #   pure_label=pure_label
+                  )
 
         if adversarial_image!=None:
 
