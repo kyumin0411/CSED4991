@@ -97,7 +97,7 @@ def DAG(model,model_name,image_name,image,
         #Getting the values of the original output
         clean_log=torch.mul(output,ground_truth)
 
-        # pdb.set_trace()
+        pdb.set_trace()
         #Finding r_m
         adv_direction=adv_log-clean_log
         r_m=torch.mul(adv_direction,cond)
