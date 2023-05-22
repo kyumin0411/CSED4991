@@ -169,7 +169,7 @@ def run_attack(model,
     if return_adv:
         images, adv_images = [], []
 
-    for i, (image, label) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
+    for i, (image, label, size, name) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
         pdb.set_trace()
         if return_adv:
             images.append(image.clone())
