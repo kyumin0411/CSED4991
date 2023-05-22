@@ -197,11 +197,11 @@ def run_attack(model,
     # for i, (image, label, size, name) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
+        image = image.clone().detach().float()
         pdb.set_trace()
         if return_adv:
             images.append(image.clone())
 
-        image = image.clone().detach().float()
         interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
         image = Variable(image).to(device)
         # label = label.to(device).squeeze(1).long()
