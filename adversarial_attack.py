@@ -198,6 +198,7 @@ def run_attack(model,
         if return_adv:
             images.append(image.clone())
 
+        image = image.clone().detach().float()
         interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
         image = Variable(image).to(device)
         # label = label.to(device).squeeze(1).long()
