@@ -165,6 +165,8 @@ def run_attack(model,
     times, accuracies, apsrs, apsrs_orig = [], [], [], []
     distances = {k: [] for k in metrics.keys()}
 
+    interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
+
     pdb.set_trace()
     if return_adv:
         images, adv_images = [], []
@@ -185,7 +187,8 @@ def run_attack(model,
 
 
         pdb.set_trace()
-        logits = model(image)
+        logits_feature5 = model(image)[5]
+        logits=interp(logits_feature5)
         if i == 0:
             num_classes = logits.size(1)
             confmat_orig = ConfusionMatrix(num_classes=num_classes)
@@ -222,7 +225,8 @@ def run_attack(model,
         if return_adv:
             adv_images.append(adv_image.cpu().clone())
         pdb.set_trace()
-        adv_logits = model(adv_image)
+        adv_logits_feature5 = model(adv_image)[5]
+        adv_logits = interp(adv_logits_feature5)
         adv_pred = adv_logits.argmax(dim=1)
         confmat_adv.update(label, adv_pred)
         if targeted:
