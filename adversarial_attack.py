@@ -71,6 +71,7 @@ def difference_of_logits(logits: Tensor, labels: Tensor, labels_infhot: Optional
 def dag(model: nn.Module,
         inputs: Tensor,
         labels: Tensor,
+        interp,
         masks: Tensor = None,
         targeted: bool = False,
         adv_threshold: float = 0.99,
