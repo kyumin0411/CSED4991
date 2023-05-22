@@ -96,6 +96,7 @@ def DAG_Attack(model: nn.Module,
     best_adv_percent = torch.zeros(batch_size, device=device)
     adv_found = torch.zeros_like(best_adv_percent, dtype=torch.bool)
     best_adv = inputs.clone()
+    inputs.requires_grad_(True)
 
     for i in range(max_iter):
         pdb.set_trace()
