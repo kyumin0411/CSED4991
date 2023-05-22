@@ -14,7 +14,7 @@ import torch
 from torch import Tensor, nn
 from torch.utils import data
 from tqdm import tqdm
-from torch.autograd import grad
+from torch.autograd import grad, Variable
 
 from util import ConfusionMatrix, make_one_hot, generate_target
 from functools import partial
@@ -199,7 +199,7 @@ def run_attack(model,
             images.append(image.clone())
 
         interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
-        image = image.to(device)
+        image = Variable(image).to(device)
         # label = label.to(device).squeeze(1).long()
         
         mask = label < n_classes
