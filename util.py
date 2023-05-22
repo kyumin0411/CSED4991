@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import pdb
+import scipy.ndimage
 
 def make_one_hot(labels, num_classes, device):
     '''
