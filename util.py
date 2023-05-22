@@ -64,3 +64,28 @@ class ConfusionMatrix(object):
             f'{iou:>5.2%}' for iou in ious.tolist()) + '\n'
                                                        f'Pixel Acc. : {acc_global.item():.2%}\n'
                                                        f'mIoU       : {ious.nanmean().item():.2%}')
+
+
+def generate_target(y_test, target_class = 13, width = 256, height = 256):
+    
+    y_target = y_test
+
+    dilated_image = scipy.ndimage.binary_dilation(y_target[0, target_class, :, :], iterations=6).astype(y_test.dtype)
+
+    for i in range(width):
+        for j in range(height):
+            y_target[0, target_class, i, j] = dilated_image[i,j]
+
+    for i in range(width):
+        for j in range(height):
+            potato = np.count_nonzero(y_target[0,:,i,j])
+            if (potato > 1):
+                x = np.where(y_target[0, : ,i, j] > 0)
+                k = x[0]
+                #print("{}, {}, {}".format(i,j,k))
+                if k[0] == target_class:
+                    y_target[0,k[1],i,j] = 0.
+                else:
+                    y_target[0, k[0], i, j] = 0.
+
+    return y_target

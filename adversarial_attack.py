@@ -16,8 +16,9 @@ from torch.utils import data
 from tqdm import tqdm
 from torch.autograd import grad
 
-from util import ConfusionMatrix
+from util import ConfusionMatrix, make_one_hot, generate_target
 from functools import partial
+import random
 
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
@@ -71,6 +72,7 @@ def difference_of_logits(logits: Tensor, labels: Tensor, labels_infhot: Optional
 def DAG_Attack(model: nn.Module,
         inputs: Tensor,
         labels: Tensor,
+        adv_labels,
         interp,
         masks: Tensor = None,
         targeted: bool = False,
@@ -138,7 +140,7 @@ def DAG_Attack(model: nn.Module,
         # r_.requires_grad_(True)
         r_.requires_grad_(True)
         loss = (dl[~is_adv] * active_masks[~is_adv]).relu()
-        r_grad = grad(loss.sum(), r_, only_inputs=True, retain_graph=True, allow_unused=True)[0]
+        r_grad = grad(loss.sum(), r_, retain_graph=True)[0]
         if(r_grad != None):
             print("r_grad is not None!")
         else:
@@ -176,7 +178,7 @@ def run_attack(model,
     times, accuracies, apsrs, apsrs_orig = [], [], [], []
     distances = {k: [] for k in metrics.keys()}
 
-    pdb.set_trace()
+    # pdb.set_trace()
     if return_adv:
         images, adv_images = [], []
 
@@ -186,8 +188,21 @@ def run_attack(model,
             images.append(image.clone())
 
         interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
+        image = image.to(device)
+        # label = label.to(device).squeeze(1).long()
+        label = label.clone().detach().float()
+        label = label.to(device)
 
-        image, label = image.to(device), label.to(device).squeeze(1).long()
+        label_oh = make_one_hot(label.long(),n_classes, device)
+
+        unique_label = torch.unique(label)
+        target_class = int(random.choice(unique_label[1:]).item())
+
+        adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
+        adv_target=torch.from_numpy(adv_target).float()
+
+        adv_target=adv_target.to(device)
+
         if targeted:
             if isinstance(target, Tensor):
                 attack_label = target.to(device).expand(image.shape[0], -1, -1)
