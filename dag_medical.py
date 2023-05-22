@@ -106,8 +106,8 @@ def DAG(model,model_name,image_name,image,
         r_m_sum=r_m.sum()
         r_m_sum.requires_grad_()
         #Finding gradient with respect to image
-        # r_m_grad=torch.autograd.grad(r_m_sum,image,retain_graph=True)
-        r_m_grad=torch.autograd.grad(r_m_sum,image,retain_graph=True,allow_unused=True)
+        r_m_grad=torch.autograd.grad(r_m_sum,image,retain_graph=True)
+        # r_m_grad=torch.autograd.grad(r_m_sum,image,retain_graph=True,allow_unused=True)
         #Saving gradient for calculation
         r_m_grad_calc=r_m_grad[0]
         
