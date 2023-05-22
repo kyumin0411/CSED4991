@@ -15,7 +15,7 @@ from torch import Tensor, nn
 from torch.utils import data
 from tqdm import tqdm
 
-from utils import ConfusionMatrix
+from util import ConfusionMatrix
 from functools import partial
 
 def lp_distances(x1: Tensor, x2: Tensor, p: Union[float, int] = 2, dim: int = 1) -> Tensor:
