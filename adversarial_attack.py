@@ -98,7 +98,7 @@ def DAG_Attack(model: nn.Module,
         pdb.set_trace()
         active_inputs = ~adv_found
         inputs_ = inputs[active_inputs]
-        r_ = r.clone()[active_inputs]
+        r_ = r[active_inputs]
         r_.requires_grad_(True)
 
         adv_inputs_ = (inputs_ + r_).clamp(0, 1)
