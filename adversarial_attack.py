@@ -19,6 +19,7 @@ from torch.autograd import grad, Variable
 from util import ConfusionMatrix, make_one_hot, generate_target
 from functools import partial
 import random
+from dag_medical import DAG
 
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
@@ -229,6 +230,20 @@ def run_attack(model,
         adv_target=torch.from_numpy(adv_target).float()
 
         adv_target=adv_target.to(device)
+        adversarial_image = DAG(model=model,
+                  model_name="FIFO",
+                  image_name=name,
+                  image=image,
+                  ground_truth=label_oh,
+                  adv_target=adv_target,
+                  num_iterations=200,
+                  gamma=0.5,
+                  interp=interp,
+                  no_background=True,
+                  background_class=0,
+                  device=device,
+                  verbose=True,
+                  pure_label=label.squeeze(0).numpy())
         adv_image = DAG_Attack(model=model, label=label_oh, 
                                adv_label = adv_target, inputs=image,interp=interp, labels=attack_label, targeted=targeted)
        
