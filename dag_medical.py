@@ -48,7 +48,7 @@ def DAG(model,model_name,image_name,image,
         image_iteration: List of image per iteration as numpy array
     '''
     
-
+    pdb.set_trace()
     noise_total=[]
     noise_iteration=[]
     prediction_iteration=[]
@@ -70,7 +70,7 @@ def DAG(model,model_name,image_name,image,
     
     # pdb.set_trace()
     for a in range(num_iterations):
-        # pdb.set_trace()
+        pdb.set_trace()
         output_feature5=model(image)[5]
         output = interp(output_feature5)
         _,predictions=torch.max(output,1)
