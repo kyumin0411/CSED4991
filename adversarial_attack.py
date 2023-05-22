@@ -165,8 +165,6 @@ def run_attack(model,
     times, accuracies, apsrs, apsrs_orig = [], [], [], []
     distances = {k: [] for k in metrics.keys()}
 
-    interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
-
     pdb.set_trace()
     if return_adv:
         images, adv_images = [], []
@@ -175,6 +173,8 @@ def run_attack(model,
         pdb.set_trace()
         if return_adv:
             images.append(image.clone())
+
+        interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
 
         image, label = image.to(device), label.to(device).squeeze(1).long()
         if targeted:
