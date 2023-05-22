@@ -151,7 +151,7 @@ def run_attack(model,
     device = next(model.parameters()).device
     targeted = True if target is not None else False
     loader_length = len(loader)
-    image_list = getattr(loader.sampler.data_source, 'dataset', loader.sampler.data_source).images
+    # image_list = getattr(loader.sampler.data_source, 'dataset', loader.sampler.data_source).images
 
     start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
     forward_counter, backward_counter = ForwardCounter(), BackwardCounter()
@@ -238,7 +238,7 @@ def run_attack(model,
     adv_acc_global, adv_accs, adv_ious = confmat_adv.compute()
 
     data = {
-        'image_names': image_list[:len(apsrs)],
+        # 'image_names': image_list[:len(apsrs)],
         'targeted': targeted,
         'accuracy': accuracies,
         'acc_global': acc_global.item(),
