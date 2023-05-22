@@ -101,7 +101,8 @@ def dag(model: nn.Module,
         r_.requires_grad_(True)
 
         adv_inputs_ = (inputs_ + r_).clamp(0, 1)
-        logits = model(adv_inputs_)
+        logits_feature5 = model(adv_inputs_)[5]
+        logits = interp(logits_feature5)
 
         if i == 0:
             num_classes = logits.size(1)
