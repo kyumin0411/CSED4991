@@ -103,7 +103,7 @@ def DAG_Attack(model: nn.Module,
         active_inputs = ~adv_found
         inputs_ = inputs[active_inputs]
         r_ = r[active_inputs]
-        # r_.requires_grad_(True)
+        r_.requires_grad_(True)
 
         adv_inputs_ = (inputs_ + r_).clamp(0, 1)
         logits_feature5 = model(adv_inputs_)[5]
@@ -114,9 +114,9 @@ def DAG_Attack(model: nn.Module,
 
         adv_direction = adv_log - clean_log
         pdb.set_trace()
-        r_.requires_grad_(True)
+        # r_.requires_grad_(True)
         r_sum = r_.sum()
-        r_sum.requires_grad_(True)
+        # r_sum.requires_grad_(True)
         r_m_grad = grad(r_sum, adv_inputs_, retain_graph=True)[0]
 
         if i == 0:
