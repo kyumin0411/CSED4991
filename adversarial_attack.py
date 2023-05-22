@@ -78,6 +78,7 @@ def DAG_Attack(model: nn.Module,
         p: float = float('inf'),
         callback = None) -> Tensor:
     """DAG attack from https://arxiv.org/abs/1703.08603"""
+    pdb.set_trace()
     device = inputs.device
     batch_size = len(inputs)
     batch_view = lambda tensor: tensor.view(-1, *[1] * (inputs.ndim - 1))
@@ -92,7 +93,7 @@ def DAG_Attack(model: nn.Module,
     best_adv = inputs.clone()
 
     for i in range(max_iter):
-
+        pdb.set_trace()
         active_inputs = ~adv_found
         inputs_ = inputs[active_inputs]
         r_ = r[active_inputs]
@@ -112,7 +113,7 @@ def DAG_Attack(model: nn.Module,
         dl = multiplier * difference_of_logits(logits, labels=masked_labels[active_inputs],
                                                labels_infhot=labels_infhot[active_inputs])
         pixel_is_adv = dl < 0
-
+        pdb.set_trace()
         active_masks = masks[active_inputs]
         adv_percent = (pixel_is_adv & active_masks).flatten(1).sum(dim=1) / masks_sum[active_inputs]
         is_adv = adv_percent >= adv_threshold
@@ -129,7 +130,7 @@ def DAG_Attack(model: nn.Module,
 
         if is_adv.all():
             break
-
+        pdb.set_trace()
         loss = (dl[~is_adv] * active_masks[~is_adv]).relu()
         r_grad = grad(loss.sum(), r_, only_inputs=True)[0]
         r_grad.div_(batch_view(r_grad.flatten(1).norm(p=p, dim=1).clamp_min_(1e-8)))
