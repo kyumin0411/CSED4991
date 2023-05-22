@@ -13,7 +13,7 @@ import pdb
 from torch.utils.data.dataset import Dataset
 from torch.utils import data
 from scipy.stats import rice
-from dag import DAG
+from dag_medical import DAG
 from dag_utils import generate_target, generate_target_swap
 from util import make_one_hot
 from configs.test_config_kyumin import get_arguments
@@ -78,15 +78,15 @@ def DAG_Attack(model, testloader, num_classes):
                   image_name=name,
                   image=image,
                   ground_truth=label_oh,
-                #   adv_target=adv_target,
+                  adv_target=adv_target,
                   num_iterations=num_iterations,
                   gamma=gamma,
                   interp=interp,
-                #   no_background=True,
-                #   background_class=0,
+                  no_background=True,
+                  background_class=0,
                   device=device,
-                  verbose=True
-                #   pure_label=pure_label
+                  verbose=True,
+                  pure_label=pure_label
                   )
 
         if adversarial_image!=None:
