@@ -77,7 +77,7 @@ def dag(model: nn.Module,
         max_iter: int = 200,
         γ: float = 0.5,
         p: float = float('inf'),
-        callback: Optional[VisdomLogger] = None) -> Tensor:
+        callback= None) -> Tensor:
     """DAG attack from https://arxiv.org/abs/1703.08603"""
     device = inputs.device
     batch_size = len(inputs)
