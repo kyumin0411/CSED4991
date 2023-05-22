@@ -134,8 +134,13 @@ def DAG_Attack(model: nn.Module,
         if is_adv.all():
             break
         pdb.set_trace()
+        r_.requires_grad_(True)
         loss = (dl[~is_adv] * active_masks[~is_adv]).relu()
-        r_grad = grad(loss.sum(), r_, only_inputs=True, retain_graph=True)[0]
+        r_grad = grad(loss.sum(), r_, only_inputs=True, retain_graph=True, allow_unused=True)[0]
+        if(r_grad != None):
+            print("r_grad is not None!")
+        else:
+            print("r_grad is None")
         r_grad.div_(batch_view(r_grad.flatten(1).norm(p=p, dim=1).clamp_min_(1e-8)))
         r_.data.sub_(r_grad, alpha=γ)
 
