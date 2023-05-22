@@ -6,7 +6,7 @@ from model.refinenetlw import rf_lw101
 from dataset.cityscapes_dataset import cityscapesDataSet
 import os.path as osp
 import os
-
+import numpy as np
 import pdb
 from collections import OrderedDict
 import pickle
@@ -17,6 +17,9 @@ from tqdm import tqdm
 
 from util import ConfusionMatrix
 from functools import partial
+
+IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
+
 
 def lp_distances(x1: Tensor, x2: Tensor, p: Union[float, int] = 2, dim: int = 1) -> Tensor:
     return (x1 - x2).flatten(dim).norm(p=p, dim=dim)
