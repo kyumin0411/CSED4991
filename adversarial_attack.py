@@ -14,6 +14,7 @@ import torch
 from torch import Tensor, nn
 from torch.utils import data
 from tqdm import tqdm
+from torch.autograd import grad
 
 from util import ConfusionMatrix
 from functools import partial
@@ -70,6 +71,7 @@ def difference_of_logits(logits: Tensor, labels: Tensor, labels_infhot: Optional
 def DAG_Attack(model: nn.Module,
         inputs: Tensor,
         labels: Tensor,
+        interp,
         masks: Tensor = None,
         targeted: bool = False,
         adv_threshold: float = 0.99,
@@ -100,7 +102,8 @@ def DAG_Attack(model: nn.Module,
         r_.requires_grad_(True)
 
         adv_inputs_ = (inputs_ + r_).clamp(0, 1)
-        logits = model(adv_inputs_)
+        logits_feature5 = model(adv_inputs_)[5]
+        logits = interp(logits_feature5)
 
         if i == 0:
             num_classes = logits.size(1)
@@ -210,7 +213,7 @@ def run_attack(model,
         pdb.set_trace()
         forward_counter.reset(), backward_counter.reset()
         start.record()
-        adv_image = DAG_Attack(model=model, inputs=image, labels=attack_label, targeted=targeted)
+        adv_image = DAG_Attack(model=model, inputs=image,interp=interp, labels=attack_label, targeted=targeted)
         # performance monitoring
         end.record()
         torch.cuda.synchronize()
