@@ -72,7 +72,8 @@ def difference_of_logits(logits: Tensor, labels: Tensor, labels_infhot: Optional
 def DAG_Attack(model: nn.Module,
         inputs: Tensor,
         labels: Tensor,
-        adv_labels,
+        label, 
+        adv_label,
         interp,
         masks: Tensor = None,
         targeted: bool = False,
@@ -101,12 +102,21 @@ def DAG_Attack(model: nn.Module,
         active_inputs = ~adv_found
         inputs_ = inputs[active_inputs]
         r_ = r[active_inputs]
-        r_.requires_grad_(True)
         # r_.requires_grad_(True)
 
         adv_inputs_ = (inputs_ + r_).clamp(0, 1)
         logits_feature5 = model(adv_inputs_)[5]
         logits = interp(logits_feature5)
+
+        adv_log = torch.mul(logits, adv_label)
+        clean_log = torch.mul(logits, label)
+
+        adv_direction = adv_log - clean_log
+        pdb.set_trace()
+        r_.requires_grad_(True)
+        r_sum = r_.sum()
+        r_sum.requires_grad_(True)
+        r_m_grad = grad(r_sum, adv_inputs_, retain_graph=True)[0]
 
         if i == 0:
             num_classes = logits.size(1)
@@ -194,9 +204,17 @@ def run_attack(model,
         mask = label < n_classes
         mask_sum = mask.flatten(1).sum(dim=1)
         label = label * mask
-        
+
         label = label.clone().detach().float()
-        label = label.to(device)
+        label = label.to(device)        
+
+        if targeted:
+            if isinstance(target, Tensor):
+                attack_label = target.to(device).expand(image.shape[0], -1, -1)
+            elif isinstance(target, int):
+                attack_label = torch.full_like(label, fill_value=target)
+        else:
+            attack_label = label
 
         label_oh = make_one_hot(label.long(),n_classes, device)
 
@@ -207,15 +225,6 @@ def run_attack(model,
         adv_target=torch.from_numpy(adv_target).float()
 
         adv_target=adv_target.to(device)
-
-        if targeted:
-            if isinstance(target, Tensor):
-                attack_label = target.to(device).expand(image.shape[0], -1, -1)
-            elif isinstance(target, int):
-                attack_label = torch.full_like(label, fill_value=target)
-        else:
-            attack_label = label
-
 
         pdb.set_trace()
         logits_feature5 = model(image)[5]
@@ -240,7 +249,8 @@ def run_attack(model,
         pdb.set_trace()
         forward_counter.reset(), backward_counter.reset()
         start.record()
-        adv_image = DAG_Attack(model=model, inputs=image,interp=interp, labels=attack_label, targeted=targeted)
+        adv_image = DAG_Attack(model=model, label=label_oh, 
+                               adv_label = adv_target, inputs=image,interp=interp, labels=attack_label, targeted=targeted)
         # performance monitoring
         end.record()
         torch.cuda.synchronize()
