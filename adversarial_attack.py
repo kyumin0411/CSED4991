@@ -190,6 +190,11 @@ def run_attack(model,
         interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
         image = image.to(device)
         # label = label.to(device).squeeze(1).long()
+        
+        mask = label < n_classes
+        mask_sum = mask.flatten(1).sum(dim=1)
+        label = label * mask
+        
         label = label.clone().detach().float()
         label = label.to(device)
 
