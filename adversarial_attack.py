@@ -200,7 +200,7 @@ def run_attack(model,
         image = image.clone().detach().float()
         pdb.set_trace()
         if return_adv:
-            images.append(image.clone())
+            images.append(image)
 
         interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
         image = Variable(image).to(device)
