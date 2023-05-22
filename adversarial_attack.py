@@ -168,11 +168,11 @@ def DAG_Attack(model: nn.Module,
 
 def run_attack(model,
                loader,
+               device,
                target: Optional[Union[int, Tensor]] = None,
                metrics: Dict[str, Callable] = _default_metrics,
                return_adv: bool = True) -> dict:
     pdb.set_trace()
-    device = next(model.parameters()).device
     targeted = True if target is not None else False
     loader_length = len(loader)
     # image_list = getattr(loader.sampler.data_source, 'dataset', loader.sampler.data_source).images
@@ -193,7 +193,9 @@ def run_attack(model,
     if return_adv:
         images, adv_images = [], []
 
-    for i, (image, label, size, name) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
+    # for i, (image, label, size, name) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
+    for index, batch in enumerate(testloader):
+        image, label, size, name = batch
         pdb.set_trace()
         if return_adv:
             images.append(image.clone())
@@ -227,11 +229,13 @@ def run_attack(model,
         adv_target=torch.from_numpy(adv_target).float()
 
         adv_target=adv_target.to(device)
-
+        adv_image = DAG_Attack(model=model, label=label_oh, 
+                               adv_label = adv_target, inputs=image,interp=interp, labels=attack_label, targeted=targeted)
+       
         pdb.set_trace()
         logits_feature5 = model(image)[5]
         logits=interp(logits_feature5)
-        if i == 0:
+        if index == 0:
             num_classes = logits.size(1)
             confmat_orig = ConfusionMatrix(num_classes=num_classes)
             confmat_adv = ConfusionMatrix(num_classes=num_classes)
@@ -251,9 +255,7 @@ def run_attack(model,
         pdb.set_trace()
         forward_counter.reset(), backward_counter.reset()
         start.record()
-        adv_image = DAG_Attack(model=model, label=label_oh, 
-                               adv_label = adv_target, inputs=image,interp=interp, labels=attack_label, targeted=targeted)
-        # performance monitoring
+         # performance monitoring
         end.record()
         torch.cuda.synchronize()
         times.append((start.elapsed_time(end)) / 1000)  # times for cuda Events are in milliseconds
@@ -341,7 +343,7 @@ if __name__ == "__main__":
                             batch_size=1, shuffle=False, pin_memory=True)
 
 
-    adversarial_examples = run_attack(model, testloader)
+    adversarial_examples = run_attack(model, testloader, device)
 
     print("after creating adversarial_examples")
     
