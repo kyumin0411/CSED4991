@@ -228,7 +228,8 @@ def run_attack(model,
 
         adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
         adv_target=torch.from_numpy(adv_target).float()
-
+        
+        pdb.set_trace()
         adv_target=adv_target.to(device)
         adversarial_image = DAG(model=model,
                   model_name="FIFO",
