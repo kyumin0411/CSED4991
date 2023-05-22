@@ -294,7 +294,7 @@ if __name__ == "__main__":
                             batch_size=1, shuffle=False, pin_memory=True)
 
 
-    adversarial_examples = run_attack(model, testloader, n_classes)
+    adversarial_examples = run_attack(model, testloader)
 
     print("after creating adversarial_examples")
     
