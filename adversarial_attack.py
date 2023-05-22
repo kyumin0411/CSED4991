@@ -14,7 +14,7 @@ import torch
 from torch import Tensor, nn
 from torch.utils import data
 from tqdm import tqdm
-from torch.autograd import grad
+# from torch.autograd import grad
 
 from util import ConfusionMatrix
 from functools import partial
@@ -136,7 +136,7 @@ def DAG_Attack(model: nn.Module,
         pdb.set_trace()
         # r_.requires_grad_(True)
         loss = (dl[~is_adv] * active_masks[~is_adv]).relu()
-        r_grad = grad(loss.sum(), r_, only_inputs=True, retain_graph=True, allow_unused=True)[0]
+        r_grad = torch.autograd.grad(loss.sum(), r_, only_inputs=True, retain_graph=True)[0]
         if(r_grad != None):
             print("r_grad is not None!")
         else:
