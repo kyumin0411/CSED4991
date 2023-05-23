@@ -179,7 +179,7 @@ def run_attack(model,
     # image_list = getattr(loader.sampler.data_source, 'dataset', loader.sampler.data_source).images
 
     start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
-    forward_counter, backward_counter = ForwardCounter(), BackwardCounter()
+    # forward_counter, backward_counter = ForwardCounter(), BackwardCounter()
     # model.register_forward_pre_hook(forward_counter)
     # if LooseVersion(torch.__version__) >= LooseVersion('1.8'):
     #     model.register_full_backward_hook(backward_counter)
