@@ -110,6 +110,7 @@ def DAG_Attack(model: nn.Module,
         logits_feature5 = model(image)[5]
         logits = interp(logits_feature5)
         _,predictions=torch.max(logits,1)
+        pixel_is_adv_label = (predictions != labels)
         predictions=make_one_hot(predictions,logits.shape[1],device)
 
         adv_log = torch.mul(logits, adv_label)
@@ -129,7 +130,7 @@ def DAG_Attack(model: nn.Module,
         image = (image + r).clamp(0, 1)
 
         # pixel_is_adv = r_m < 0
-
+        pdb.set_trace()
         pixel_is_adv = (predictions != label)
         # pixel_adv_found.logical_or_(pixel_is_adv)
         adv_percent = (pixel_is_adv & masks).flatten(1).sum(dim=1) / masks_sum
@@ -229,7 +230,7 @@ def run_attack(model,
         #           interp=interp,
         #           verbose=True,
         #           pure_label=None)
-        adv_image = DAG_Attack(model=model, label=label_oh, labels=None, masks=mask,
+        adv_image = DAG_Attack(model=model, label=label_oh, labels=label, masks=mask,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
         pdb.set_trace()
