@@ -91,6 +91,8 @@ def dag(model: nn.Module,
     batch_view = lambda tensor: tensor.view(-1, *[1] * (inputs.ndim - 1))
     multiplier = -1 if targeted else 1
 
+
+
     # Setup variables
     r = torch.zeros_like(inputs)
 
@@ -278,15 +280,14 @@ def run_attack(model,
         interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
         image = Variable(image).to(device)
         # label = label.to(device).squeeze(1).long()
-        
+    
+        label = label.clone().detach().float()
+        label = label.to(device)    
+
         mask = label < n_classes
         mask = mask.to(device)    
         mask_sum = mask.flatten(1).sum(dim=1)
-        pdb.set_trace()
         label = label * mask
-
-        label = label.clone().detach().float()
-        label = label.to(device)    
 
         label_oh = make_one_hot(label.long(),n_classes, device)
 
