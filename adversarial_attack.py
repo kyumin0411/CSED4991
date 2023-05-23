@@ -106,7 +106,7 @@ def DAG_Attack(model: nn.Module,
     masks_sum = masks.flatten(1).sum(dim=1)
 
     for i in range(max_iter):
-        pdb.set_trace()
+        # pdb.set_trace()
         logits_feature5 = model(image)[5]
         logits = interp(logits_feature5)
         _,predictions=torch.max(logits,1)
@@ -130,15 +130,16 @@ def DAG_Attack(model: nn.Module,
         image = (image + r).clamp(0, 1)
 
         # pixel_is_adv = r_m < 0
-        pdb.set_trace()
+        # pdb.set_trace()
         pixel_is_adv = (predictions != label)
         # pixel_adv_found.logical_or_(pixel_is_adv)
         adv_percent = (pixel_is_adv_label & masks).flatten(1).sum(dim=1) / masks_sum
        
         best_adv = torch.where(pixel_is_adv_label & masks, image.detach(), best_adv)
  
-        pdb.set_trace()
+        # pdb.set_trace()
         if adv_percent >= adv_threshold:
+            pdb.set_trace()
             break
 
         if callback:
@@ -149,6 +150,7 @@ def DAG_Attack(model: nn.Module,
             if (i + 1) % (max_iter // 20) == 0 or (i + 1) == max_iter:
                 callback.update_lines()
 
+    pdb.set_trace()
     if callback:
         callback.update_lines()
 
