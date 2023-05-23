@@ -239,7 +239,7 @@ def run_attack(model,
                   adv_target=adv_target,
                   interp=interp,
                   verbose=True,
-                  pure_label=label.squeeze(0).numpy())
+                  pure_label=None)
         adv_image = DAG_Attack(model=model, label=label_oh, 
                                adv_label = adv_target, inputs=image,interp=interp, labels=attack_label, targeted=targeted)
        
