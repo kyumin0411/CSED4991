@@ -19,7 +19,7 @@ from torch.autograd import grad, Variable
 from util import ConfusionMatrix, make_one_hot, generate_target
 from functools import partial
 import random
-from dag_medical import DAG
+import PIL
 
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
@@ -159,6 +159,8 @@ def dag(model: nn.Module,
 
 def DAG_Attack(model: nn.Module,
         inputs: Tensor,
+        model_name,
+        image_name,
         labels: Tensor,
         label, 
         adv_label,
@@ -241,6 +243,12 @@ def DAG_Attack(model: nn.Module,
     if callback:
         callback.update_lines()
 
+    adversarial_image = inputs + r_perturb
+    data_path = "../data/adversarial/" + model_name + "_" + image_name[0].split('/')[1]
+    
+    np_arr = np.array(adversarial_image, dtype=np.uint8)
+    img = PIL.Image.fromarray(np_arr)
+    img.save(data_path)
     return best_adv
 
 def run_attack(model,
@@ -301,6 +309,7 @@ def run_attack(model,
         # pdb.set_trace()
         adv_target=adv_target.to(device)
         adv_image = DAG_Attack(model=model, label=label_oh, labels=label, masks=mask,
+                               model_name = "FIFO", image_name= name,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
         pdb.set_trace()
