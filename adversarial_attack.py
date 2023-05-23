@@ -231,7 +231,7 @@ def run_attack(model,
         
         # pdb.set_trace()
         adv_target=adv_target.to(device)
-        adv_image = DAG_Attack(model=model, label=label_oh, labels=None
+        adv_image = DAG_Attack(model=model, label=label_oh, labels=None,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
         pdb.set_trace()
