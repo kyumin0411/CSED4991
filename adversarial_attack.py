@@ -100,7 +100,7 @@ def DAG_Attack(model: nn.Module,
     image = inputs.clone()
 
     image.requires_grad_(True)
-    
+    masks_sum = masks.flatten(1).sum(dim=1)
 
     for i in range(max_iter):
         pdb.set_trace()
@@ -124,64 +124,25 @@ def DAG_Attack(model: nn.Module,
         r.data.add_(r_m_grad)
 
         image = (image + r_m_grad).clamp(0, 1)
-        
-        # adv_percent = (pixel_is_adv & active_masks).flatten(1).sum(dim=1) / masks_sum[active_inputs]
-        # is_adv = adv_percent >= adv_threshold
-        # adv_found[active_inputs] = is_adv
 
-        # active_inputs = ~adv_found
-        # inputs_ = inputs[active_inputs]
-        # r_.requires_grad_(True)
+        pixel_is_adv = r_m < 0
+        active_masks = masks[active_inputs]
 
-        # adv_inputs_ = (inputs_ + r_).clamp(0, 1)
-        # logits_feature5 = model(adv_inputs_)[5]
-        # logits = interp(logits_feature5)
+        adv_percent = (pixel_is_adv & active_masks).flatten(1).sum(dim=1) / masks_sum[active_inputs]
+        is_adv = adv_percent >= adv_threshold
+        adv_found[active_inputs] = is_adv
+        best_adv[active_inputs] = torch.where(batch_view(is_adv), inputs.detach(), best_adv[active_inputs])
+        pdb.set_trace()
+        if is_adv.all():
+            break
 
+        if callback:
+            callback.accumulate_line('dl', i, r_m[active_masks].mean(), title=f'DAG (p={p}, gamma={gamma}) - DL')
+            callback.accumulate_line(f'L{p}', i, r.flatten(1).norm(p=p, dim=1).mean(), title=f'DAG (p={p}, gamma={gamma}) - Norm')
+            callback.accumulate_line('adv%', i, adv_percent.mean(), title=f'DAG (p={p}, gamma={gamma}) - Adv percent')
 
-        # pdb.set_trace()
-        # # r_.requires_grad_(True)
-
-        # if i == 0:
-        #     num_classes = logits.size(1)
-        #     if masks is None:
-        #         masks = labels < num_classes
-        #     masks_sum = masks.flatten(1).sum(dim=1)
-        #     masked_labels = labels * masks
-        #     labels_infhot = torch.zeros_like(logits.detach()).scatter(1, masked_labels.unsqueeze(1), float('inf'))
-
-        # dl = multiplier * difference_of_logits(logits, labels=masked_labels[active_inputs],
-        #                                        labels_infhot=labels_infhot[active_inputs])
-        # pixel_is_adv = dl < 0
-        # pdb.set_trace()
-        # active_masks = masks[active_inputs]
-        # adv_percent = (pixel_is_adv & active_masks).flatten(1).sum(dim=1) / masks_sum[active_inputs]
-        # is_adv = adv_percent >= adv_threshold
-        # adv_found[active_inputs] = is_adv
-        # best_adv[active_inputs] = torch.where(batch_view(is_adv), adv_inputs_.detach(), best_adv[active_inputs])
-
-        # if callback:
-        #     callback.accumulate_line('dl', i, dl[active_masks].mean(), title=f'DAG (p={p}, gamma={gamma}) - DL')
-        #     callback.accumulate_line(f'L{p}', i, r.flatten(1).norm(p=p, dim=1).mean(), title=f'DAG (p={p}, gamma={gamma}) - Norm')
-        #     callback.accumulate_line('adv%', i, adv_percent.mean(), title=f'DAG (p={p}, gamma={gamma}) - Adv percent')
-
-        #     if (i + 1) % (max_iter // 20) == 0 or (i + 1) == max_iter:
-        #         callback.update_lines()
-
-        # if is_adv.all():
-        #     break
-        # pdb.set_trace()
-        # # r_.requires_grad_(True)
-        # r_.requires_grad_(True)
-        # loss = (dl[~is_adv] * active_masks[~is_adv]).relu()
-        # r_grad = grad(loss.sum(), r_, retain_graph=True)[0]
-        # if(r_grad != None):
-        #     print("r_grad is not None!")
-        # else:
-        #     print("r_grad is None")
-        # r_grad.div_(batch_view(r_grad.flatten(1).norm(p=p, dim=1).clamp_min_(1e-8)))
-        # r_.data.sub_(r_grad, alpha=gamma)
-
-        # r[active_inputs] = r_
+            if (i + 1) % (max_iter // 20) == 0 or (i + 1) == max_iter:
+                callback.update_lines()
 
     if callback:
         callback.update_lines()
@@ -261,7 +222,7 @@ def run_attack(model,
         #           interp=interp,
         #           verbose=True,
         #           pure_label=None)
-        adv_image = DAG_Attack(model=model, label=label_oh, labels=None,
+        adv_image = DAG_Attack(model=model, label=label_oh, labels=None, masks=mask,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
         pdb.set_trace()
