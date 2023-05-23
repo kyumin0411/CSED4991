@@ -47,7 +47,7 @@ def DAG(model,model_name,image_name,image,
         prediction_iteration: List of prediction per iteration as numpy array
         image_iteration: List of image per iteration as numpy array
     '''
-    
+    image.requires_grad_(True)
     pdb.set_trace()
     noise_total=[]
     noise_iteration=[]
