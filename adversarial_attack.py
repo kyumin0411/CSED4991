@@ -100,6 +100,7 @@ def DAG_Attack(model: nn.Module,
     image = inputs.clone()
 
     image.requires_grad_(True)
+    masks = masks.to(device)
     masks_sum = masks.flatten(1).sum(dim=1)
 
     for i in range(max_iter):
@@ -119,11 +120,11 @@ def DAG_Attack(model: nn.Module,
         r_m_grad = grad(r_m_sum, image, retain_graph=True)[0]
         
         r_m_grad.div_(batch_view(r_m_grad.flatten(1).norm(p=p, dim=1).clamp_min_(1e-8)))
-        # r_.data.sub_(r_m_grad, alpha=gamma)
+        r.data.sub_(r_m_grad, alpha=gamma)
 
-        r.data.add_(r_m_grad)
+        # r.data.add_(r_m_grad)
 
-        image = (image + r_m_grad).clamp(0, 1)
+        image = (image + r).clamp(0, 1)
 
         pixel_is_adv = r_m < 0
         active_masks = masks[active_inputs]
