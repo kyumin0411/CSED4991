@@ -282,6 +282,7 @@ def run_attack(model,
         mask = label < n_classes
         mask = mask.to(device)    
         mask_sum = mask.flatten(1).sum(dim=1)
+        pdb.set_trace()
         label = label * mask
 
         label = label.clone().detach().float()
