@@ -116,9 +116,9 @@ def DAG_Attack(model: nn.Module,
         adv_direction = adv_log - clean_log
         pdb.set_trace()
         # r_.requires_grad_(True)
-        r_sum = r_.sum()
-        r_sum.requires_grad_(True)
-        r_m_grad = grad(r_sum, adv_inputs_, retain_graph=True)[0]
+        adv_direction_sum = adv_direction.sum()
+        adv_direction_sum.requires_grad_(True)
+        r_m_grad = grad(adv_direction_sum, adv_inputs_, retain_graph=True)[0]
 
         if i == 0:
             num_classes = logits.size(1)
