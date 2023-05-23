@@ -135,7 +135,7 @@ def DAG_Attack(model: nn.Module,
         adv_percent = (pixel_is_adv & masks).flatten(1).sum(dim=1) / masks_sum
         
         is_adv = adv_percent >= adv_threshold
-        best_adv = torch.where(batch_view(is_adv), inputs.detach(), best_adv)
+        best_adv = torch.where(batch_view(is_adv), image.detach(), best_adv)
 
 
 
