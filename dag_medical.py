@@ -70,7 +70,7 @@ def DAG(model,model_name,image_name,image,
     
     # pdb.set_trace()
     for a in range(num_iterations):
-        pdb.set_trace()
+        # pdb.set_trace()
         output_feature5=model(image)[5]
         output = interp(output_feature5)
         _,predictions=torch.max(output,1)
@@ -97,7 +97,7 @@ def DAG(model,model_name,image_name,image,
         #Getting the values of the original output
         clean_log=torch.mul(output,ground_truth)
 
-        pdb.set_trace()
+        
         #Finding r_m
         adv_direction=adv_log-clean_log
         r_m=torch.mul(adv_direction,cond)
@@ -106,6 +106,7 @@ def DAG(model,model_name,image_name,image,
         r_m_sum=r_m.sum()
         r_m_sum.requires_grad_()
         #Finding gradient with respect to image
+        pdb.set_trace()
         r_m_grad=torch.autograd.grad(r_m_sum,image,retain_graph=True)
         # r_m_grad=torch.autograd.grad(r_m_sum,image,retain_graph=True,allow_unused=True)
         #Saving gradient for calculation
