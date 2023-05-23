@@ -113,6 +113,7 @@ def dag(model: nn.Module,
         logits_feature5 = model(adv_inputs_)[5]
         logits = interp(logits_feature5)
 
+        pdb.set_trace()
         if i == 0:
             num_classes = logits.size(1)
             if masks is None:
