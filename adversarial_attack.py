@@ -94,9 +94,10 @@ def DAG_Attack(model: nn.Module,
     r = torch.zeros_like(inputs)
 
     # Init trackers
-    best_adv_percent = torch.zeros(batch_size, device=device)
+    best_adv_percent = torch.zeros(batch_size, device=device)   # [0.6]
     # adv_found = torch.zeros_like(best_adv_percent, dtype=torch.bool)
     adv_found = torch.zeros_like(inputs, dtype=torch.bool)
+    pixel_adv_found = torch.zeros_like(label, dtyep=torch.bool)
     best_adv = inputs.clone()
     image = inputs.clone()
 
@@ -108,6 +109,10 @@ def DAG_Attack(model: nn.Module,
         pdb.set_trace()
         logits_feature5 = model(image)[5]
         logits = interp(logits_feature5)
+        _,predictions=torch.max(logits,1)
+        predictions=make_one_hot(predictions,logits.shape[1],device)
+
+
         active_inputs = ~adv_found
         # r_ = r[active_inputs]
 
@@ -127,13 +132,19 @@ def DAG_Attack(model: nn.Module,
 
         image = (image + r).clamp(0, 1)
 
-        pixel_is_adv = r_m < 0
+        # pixel_is_adv = r_m < 0
         active_masks = masks[active_inputs]
 
+        pixel_is_adv = (predictions != label)
+        # pixel_adv_found.logical_or_(pixel_is_adv)
         adv_percent = (pixel_is_adv & active_masks).flatten(1).sum(dim=1) / masks_sum[active_inputs]
+        
         is_adv = adv_percent >= adv_threshold
         adv_found[active_inputs] = is_adv
         best_adv[active_inputs] = torch.where(batch_view(is_adv), inputs.detach(), best_adv[active_inputs])
+
+
+
         pdb.set_trace()
         if is_adv.all():
             break
