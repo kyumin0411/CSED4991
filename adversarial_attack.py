@@ -231,6 +231,15 @@ def run_attack(model,
         
         # pdb.set_trace()
         adv_target=adv_target.to(device)
+        adversarial_image = DAG(model=model,
+                  model_name="FIFO",
+                  image_name=name,
+                  image=image,
+                  ground_truth=label_oh,
+                  adv_target=adv_target,
+                  interp=interp,
+                  verbose=True,
+                  pure_label=None)
         adv_image = DAG_Attack(model=model, label=label_oh, labels=None,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
