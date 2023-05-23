@@ -112,10 +112,6 @@ def DAG_Attack(model: nn.Module,
         _,predictions=torch.max(logits,1)
         predictions=make_one_hot(predictions,logits.shape[1],device)
 
-
-        active_inputs = ~adv_found
-        # r_ = r[active_inputs]
-
         adv_log = torch.mul(logits, adv_label)
         clean_log = torch.mul(logits, label)
 
@@ -133,24 +129,22 @@ def DAG_Attack(model: nn.Module,
         image = (image + r).clamp(0, 1)
 
         # pixel_is_adv = r_m < 0
-        active_masks = masks[active_inputs]
 
         pixel_is_adv = (predictions != label)
         # pixel_adv_found.logical_or_(pixel_is_adv)
-        adv_percent = (pixel_is_adv & active_masks).flatten(1).sum(dim=1) / masks_sum[active_inputs]
+        adv_percent = (pixel_is_adv & masks).flatten(1).sum(dim=1) / masks_sum
         
         is_adv = adv_percent >= adv_threshold
-        adv_found[active_inputs] = is_adv
-        best_adv[active_inputs] = torch.where(batch_view(is_adv), inputs.detach(), best_adv[active_inputs])
+        best_adv = torch.where(batch_view(is_adv), inputs.detach(), best_adv)
 
 
 
         pdb.set_trace()
-        if is_adv.all():
+        if adv_percent >= adv_threshold:
             break
 
         if callback:
-            callback.accumulate_line('dl', i, r_m[active_masks].mean(), title=f'DAG (p={p}, gamma={gamma}) - DL')
+            callback.accumulate_line('dl', i, r_m.mean(), title=f'DAG (p={p}, gamma={gamma}) - DL')
             callback.accumulate_line(f'L{p}', i, r.flatten(1).norm(p=p, dim=1).mean(), title=f'DAG (p={p}, gamma={gamma}) - Norm')
             callback.accumulate_line('adv%', i, adv_percent.mean(), title=f'DAG (p={p}, gamma={gamma}) - Adv percent')
 
