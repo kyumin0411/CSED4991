@@ -280,11 +280,12 @@ def run_attack(model,
         # label = label.to(device).squeeze(1).long()
         
         mask = label < n_classes
+        mask = mask.to(device)    
         mask_sum = mask.flatten(1).sum(dim=1)
         label = label * mask
 
         label = label.clone().detach().float()
-        label = label.to(device)        
+        label = label.to(device)    
 
         label_oh = make_one_hot(label.long(),n_classes, device)
 
