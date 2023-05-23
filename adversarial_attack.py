@@ -76,6 +76,7 @@ def DAG_Attack(model: nn.Module,
         label, 
         adv_label,
         interp,
+        device='cuda:0',
         masks: Tensor = None,
         targeted: bool = False,
         adv_threshold: float = 0.99,
@@ -85,7 +86,6 @@ def DAG_Attack(model: nn.Module,
         callback = None) -> Tensor:
     """DAG attack from https://arxiv.org/abs/1703.08603"""
     pdb.set_trace()
-    device = inputs.device
     batch_size = len(inputs)
     batch_view = lambda tensor: tensor.view(-1, *[1] * (inputs.ndim - 1))
     multiplier = -1 if targeted else 1
@@ -179,12 +179,12 @@ def run_attack(model,
     # image_list = getattr(loader.sampler.data_source, 'dataset', loader.sampler.data_source).images
 
     start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
-    forward_counter, backward_counter = ForwardCounter(), BackwardCounter()
-    model.register_forward_pre_hook(forward_counter)
-    if LooseVersion(torch.__version__) >= LooseVersion('1.8'):
-        model.register_full_backward_hook(backward_counter)
-    else:
-        model.register_backward_hook(backward_counter)
+    # forward_counter, backward_counter = ForwardCounter(), BackwardCounter()
+    # model.register_forward_pre_hook(forward_counter)
+    # if LooseVersion(torch.__version__) >= LooseVersion('1.8'):
+    #     model.register_full_backward_hook(backward_counter)
+    # else:
+    #     model.register_backward_hook(backward_counter)
     forwards, backwards = [], []  # number of forward and backward calls per sample
 
     times, accuracies, apsrs, apsrs_orig = [], [], [], []
@@ -231,15 +231,15 @@ def run_attack(model,
         
         # pdb.set_trace()
         adv_target=adv_target.to(device)
-        adversarial_image = DAG(model=model,
-                  model_name="FIFO",
-                  image_name=name,
-                  image=image,
-                  ground_truth=label_oh,
-                  adv_target=adv_target,
-                  interp=interp,
-                  verbose=True,
-                  pure_label=None)
+        # adversarial_image = DAG(model=model,
+        #           model_name="FIFO",
+        #           image_name=name,
+        #           image=image,
+        #           ground_truth=label_oh,
+        #           adv_target=adv_target,
+        #           interp=interp,
+        #           verbose=True,
+        #           pure_label=None)
         adv_image = DAG_Attack(model=model, label=label_oh, labels=None,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
