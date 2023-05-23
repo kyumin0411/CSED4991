@@ -173,13 +173,13 @@ def run_attack(model,
                target: Optional[Union[int, Tensor]] = None,
                metrics: Dict[str, Callable] = _default_metrics,
                return_adv: bool = True) -> dict:
-    pdb.set_trace()
+    # pdb.set_trace()
     # targeted = True if target is not None else False
     # loader_length = len(loader)
     # # image_list = getattr(loader.sampler.data_source, 'dataset', loader.sampler.data_source).images
 
-    # start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
-    # forward_counter, backward_counter = ForwardCounter(), BackwardCounter()
+    start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
+    forward_counter, backward_counter = ForwardCounter(), BackwardCounter()
     # model.register_forward_pre_hook(forward_counter)
     # if LooseVersion(torch.__version__) >= LooseVersion('1.8'):
     #     model.register_full_backward_hook(backward_counter)
@@ -198,7 +198,7 @@ def run_attack(model,
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
         image = image.clone().detach().float()
-        pdb.set_trace()
+        # pdb.set_trace()
         if return_adv:
             images.append(image)
 
@@ -229,7 +229,7 @@ def run_attack(model,
         adv_target=generate_target(label_oh.cpu().numpy(), target_class = target_class)
         adv_target=torch.from_numpy(adv_target).float()
         
-        pdb.set_trace()
+        # pdb.set_trace()
         adv_target=adv_target.to(device)
         adversarial_image = DAG(model=model,
                   model_name="FIFO",
