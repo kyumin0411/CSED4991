@@ -107,7 +107,7 @@ def DAG_Attack(model: nn.Module,
         logits_feature5 = model(image)[5]
         logits = interp(logits_feature5)
         active_inputs = ~adv_found
-        r_ = r[active_inputs]
+        # r_ = r[active_inputs]
 
         adv_log = torch.mul(logits, adv_label)
         clean_log = torch.mul(logits, label)
@@ -116,14 +116,14 @@ def DAG_Attack(model: nn.Module,
 
         r_m_sum = r_m.sum()
         r_m_sum.requires_grad_(True)
-        r_m_grad = grad(r_m_sum, adv_inputs_, retain_graph=True)[0]
+        r_m_grad = grad(r_m_sum, image, retain_graph=True)[0]
         
-        r_grad.div_(batch_view(r_grad.flatten(1).norm(p=p, dim=1).clamp_min_(1e-8)))
-        r_.data.sub_(r_grad, alpha=gamma)
+        r_m_grad.div_(batch_view(r_m_grad.flatten(1).norm(p=p, dim=1).clamp_min_(1e-8)))
+        # r_.data.sub_(r_m_grad, alpha=gamma)
 
-        r.data.add_(r_)
+        r.data.add_(r_m_grad)
 
-        image = (image + r_).clamp(0, 1)
+        image = (image + r_m_grad).clamp(0, 1)
         
         # adv_percent = (pixel_is_adv & active_masks).flatten(1).sum(dim=1) / masks_sum[active_inputs]
         # is_adv = adv_percent >= adv_threshold
