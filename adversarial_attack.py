@@ -133,7 +133,7 @@ def DAG_Attack(model: nn.Module,
         pdb.set_trace()
         pixel_is_adv = (predictions != label)
         # pixel_adv_found.logical_or_(pixel_is_adv)
-        adv_percent = (pixel_is_adv & masks).flatten(1).sum(dim=1) / masks_sum
+        adv_percent = (pixel_is_adv_label & masks).flatten(1).sum(dim=1) / masks_sum
        
         best_adv = torch.where(pixel_is_adv_label & masks, image.detach(), best_adv)
  
