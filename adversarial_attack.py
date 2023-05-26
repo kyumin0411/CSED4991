@@ -22,7 +22,7 @@ import random
 import PIL
 
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
-
+testloader_iteration = 0
 
 palette = [128, 64, 128, 244, 35, 232, 70, 70, 70, 102, 102, 156, 190, 153, 153, 153, 153, 153, 250, 170, 30,
            220, 220, 0, 107, 142, 35, 152, 251, 152, 70, 130, 180, 220, 20, 60, 255, 0, 0, 0, 0, 142, 0, 0, 70,
@@ -191,7 +191,9 @@ def DAG_Attack(model: nn.Module,
     np_arr_RGB = np_arr[:,:,::-1]
     img = PIL.Image.fromarray(np_arr_RGB)
     img.save(data_path)
-    
+
+    testloader_iteration += 1
+    print("%d image is adversed. \n",testloader_iteration)
     # return best_adv
     return
 
