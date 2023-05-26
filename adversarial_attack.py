@@ -260,7 +260,7 @@ def run_attack(model,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
         testloader_iteration += 1
-        print("%d image is adversed. \n",testloader_iteration)
+        print(testloader_iteration , " image is adversed. \n")
         # pdb.set_trace()
     #     logits_feature5 = model(image)[5]
     #     logits=interp(logits_feature5)
@@ -340,6 +340,7 @@ def run_attack(model,
     #     data['adv_images'] = adv_images
 
     # return data
+    adv_percent_file.close()
     return
 
 
