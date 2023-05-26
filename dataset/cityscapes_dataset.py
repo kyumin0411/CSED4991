@@ -52,6 +52,7 @@ class cityscapesDataSet(data.Dataset):
         ]
         self.ignore_index = 255
         self.class_map = dict(zip(self.valid_classes, range(19)))
+        pdb.set_trace()
         for name in self.img_ids:
             img_file = osp.join(self.root, "leftImg8bit/%s/%s" % (self.set, name))
             label_file = osp.join(self.root, "gtFine/%s/%s" % (self.set, name[:-15]+'gtFine_labelIds.png'))
