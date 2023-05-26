@@ -307,8 +307,24 @@ def run_attack(model,
         # adversarial_image = image + r_perturb
         data_path = "../data/adversarial/" + "original_image" + "_" + name[0].split('/')[1]
         
-        np_arr = np.array(image, dtype=np.uint8)
-        img = PIL.Image.fromarray(np_arr)
+        np_arr = np.array(image.cpu(), dtype=np.uint8)
+
+        image_mean = torch.mean(image, dim=0)
+
+        image_np = image_mean.cpu().numpy()
+
+        image_np.transpose(1,2,0)
+
+        image_transpose= image_np.transpose(1,2,0)
+
+        repaired_image = image_transpose + IMG_MEAN
+
+        np_arr= np.array(repaired_image, dtype=np.uint8)
+
+        np_arr_RGB = np_arr[:,:,::-1]
+
+        img = PIL.Image.fromarray(np_arr_RGB)
+
         img.save(data_path)
         ### saving image test ###
         image = image.clone().detach().float()
