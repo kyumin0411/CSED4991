@@ -282,6 +282,13 @@ def run_attack(model,
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
 
+        if return_adv:
+            images.append(image)
+
+        interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
+        image = Variable(image).to(device)
+        # label = label.to(device).squeeze(1).long()
+    
         pdb.set_trace()
         ### saving image test ###
         # adversarial_image = image + r_perturb
@@ -293,13 +300,7 @@ def run_attack(model,
         ### saving image test ###
         image = image.clone().detach().float()
         # pdb.set_trace()
-        if return_adv:
-            images.append(image)
-
-        interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
-        image = Variable(image).to(device)
-        # label = label.to(device).squeeze(1).long()
-    
+        
         label = label.clone().detach().float()
         label = label.to(device)    
 
