@@ -430,6 +430,7 @@ if __name__ == "__main__":
     device = torch.device("cuda:0")
 
     model = model.to(device)
+    pdb.set_trace()
     testloader = data.DataLoader(cityscapesDataSet(args.data_dir_city, args.data_city_list, crop_size = (2048, 1024), mean=IMG_MEAN, scale=False, mirror=False, set=args.set),
                             batch_size=1, shuffle=False, pin_memory=True)
 
