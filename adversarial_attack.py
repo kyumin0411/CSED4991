@@ -222,7 +222,7 @@ def run_attack(model,
     if return_adv:
         images, adv_images = [], []
     pdb.set_trace()
-    adv_percent_file = open("../../adv_percent.txt", "w")
+    adv_percent_file = open("../data/adversarial/adv_percent.txt", "w")
 
     # for i, (image, label, size, name) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
     for index, batch in enumerate(testloader):
