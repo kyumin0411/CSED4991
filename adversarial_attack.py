@@ -207,7 +207,7 @@ def DAG_Attack(model: nn.Module,
     masks = masks.to(device)
     masks_sum = masks.flatten(1).sum(dim=1)
 
-    for i in range(max_iter):
+    for iter in range(max_iter):
         # pdb.set_trace()
         logits_feature5 = model(image)[5]
         logits = interp(logits_feature5)
@@ -233,7 +233,6 @@ def DAG_Attack(model: nn.Module,
 
         # pixel_is_adv = r_m < 0
         # pdb.set_trace()
-        pixel_is_adv = (predictions != label)
         # pixel_adv_found.logical_or_(pixel_is_adv)
         adv_percent = (pixel_is_adv_label & masks).flatten(1).sum(dim=1) / masks_sum
        
@@ -242,18 +241,8 @@ def DAG_Attack(model: nn.Module,
         # pdb.set_trace()
         if adv_percent >= adv_threshold:
             pdb.set_trace()
+            print('adversed at %d iterate. %d %', iter, adv_percent)
             break
-
-        if callback:
-            callback.accumulate_line('dl', i, r_m.mean(), title=f'DAG (p={p}, gamma={gamma}) - DL')
-            callback.accumulate_line(f'L{p}', i, r_perturb.flatten(1).norm(p=p, dim=1).mean(), title=f'DAG (p={p}, gamma={gamma}) - Norm')
-            callback.accumulate_line('adv%', i, adv_percent.mean(), title=f'DAG (p={p}, gamma={gamma}) - Adv percent')
-
-            if (i + 1) % (max_iter // 20) == 0 or (i + 1) == max_iter:
-                callback.update_lines()
-
-    if callback:
-        callback.update_lines()
 
     pdb.set_trace()
 
@@ -284,10 +273,8 @@ def DAG_Attack(model: nn.Module,
     img = PIL.Image.fromarray(np_arr_RGB)
     img.save(data_path)
     
-    # np_arr = np.array(adversarial_image, dtype=np.uint8)
-    # img = PIL.Image.fromarray(np_arr)
-    # img.save(data_path)
-    return best_adv
+    # return best_adv
+    return
 
 def run_attack(model,
                loader,
@@ -348,89 +335,90 @@ def run_attack(model,
         
         # pdb.set_trace()
         adv_target=adv_target.to(device)
-        adv_image = DAG_Attack(model=model, label=label_oh, labels=label, masks=mask,
+        DAG_Attack(model=model, label=label_oh, labels=label, masks=mask,
                                model_name = "FIFO", image_name= name,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
-        pdb.set_trace()
-        logits_feature5 = model(image)[5]
-        logits=interp(logits_feature5)
-        if index == 0:
-            num_classes = logits.size(1)
-            confmat_orig = ConfusionMatrix(num_classes=num_classes)
-            confmat_adv = ConfusionMatrix(num_classes=num_classes)
+        # pdb.set_trace()
+    #     logits_feature5 = model(image)[5]
+    #     logits=interp(logits_feature5)
+    #     if index == 0:
+    #         num_classes = logits.size(1)
+    #         confmat_orig = ConfusionMatrix(num_classes=num_classes)
+    #         confmat_adv = ConfusionMatrix(num_classes=num_classes)
 
-        mask = label < num_classes
-        mask_sum = mask.flatten(1).sum(dim=1)
-        pred = logits.argmax(dim=1)
-        accuracies.extend(((pred == label) & mask).flatten(1).sum(dim=1).div(mask_sum).cpu().tolist())
-        confmat_orig.update(label, pred)
+    #     mask = label < num_classes
+    #     mask_sum = mask.flatten(1).sum(dim=1)
+    #     pred = logits.argmax(dim=1)
+    #     accuracies.extend(((pred == label) & mask).flatten(1).sum(dim=1).div(mask_sum).cpu().tolist())
+    #     confmat_orig.update(label, pred)
 
-        if targeted:
-            target_mask = attack_label < logits.size(1)
-            target_sum = target_mask.flatten(1).sum(dim=1)
-            apsrs_orig.extend(((pred == attack_label) & target_mask).flatten(1).sum(dim=1).div(target_sum).cpu().tolist())
-        else:
-            apsrs_orig.extend(((pred != label) & mask).flatten(1).sum(dim=1).div(mask_sum).cpu().tolist())
-        pdb.set_trace()
-        forward_counter.reset(), backward_counter.reset()
-        start.record()
-         # performance monitoring
-        end.record()
-        torch.cuda.synchronize()
-        times.append((start.elapsed_time(end)) / 1000)  # times for cuda Events are in milliseconds
-        forwards.append(forward_counter.num_samples_called)
-        backwards.append(backward_counter.num_samples_called)
-        forward_counter.reset(), backward_counter.reset()
-        pdb.set_trace()
-        if adv_image.min() < 0 or adv_image.max() > 1:
-            warnings.warn('Values of produced adversarials are not in the [0, 1] range -> Clipping to [0, 1].')
-            adv_image.clamp_(min=0, max=1)
+    #     if targeted:
+    #         target_mask = attack_label < logits.size(1)
+    #         target_sum = target_mask.flatten(1).sum(dim=1)
+    #         apsrs_orig.extend(((pred == attack_label) & target_mask).flatten(1).sum(dim=1).div(target_sum).cpu().tolist())
+    #     else:
+    #         apsrs_orig.extend(((pred != label) & mask).flatten(1).sum(dim=1).div(mask_sum).cpu().tolist())
+    #     pdb.set_trace()
+    #     forward_counter.reset(), backward_counter.reset()
+    #     start.record()
+    #      # performance monitoring
+    #     end.record()
+    #     torch.cuda.synchronize()
+    #     times.append((start.elapsed_time(end)) / 1000)  # times for cuda Events are in milliseconds
+    #     forwards.append(forward_counter.num_samples_called)
+    #     backwards.append(backward_counter.num_samples_called)
+    #     forward_counter.reset(), backward_counter.reset()
+    #     pdb.set_trace()
+    #     if adv_image.min() < 0 or adv_image.max() > 1:
+    #         warnings.warn('Values of produced adversarials are not in the [0, 1] range -> Clipping to [0, 1].')
+    #         adv_image.clamp_(min=0, max=1)
 
-        if return_adv:
-            adv_images.append(adv_image.cpu().clone())
-        pdb.set_trace()
-        adv_logits_feature5 = model(adv_image)[5]
-        adv_logits = interp(adv_logits_feature5)
-        adv_pred = adv_logits.argmax(dim=1)
-        confmat_adv.update(label, adv_pred)
-        if targeted:
-            apsrs.extend(((adv_pred == attack_label) & target_mask).flatten(1).sum(dim=1).div(target_sum).cpu().tolist())
-        else:
-            apsrs.extend(((adv_pred != label) & mask).flatten(1).sum(dim=1).div(mask_sum).cpu().tolist())
+    #     if return_adv:
+    #         adv_images.append(adv_image.cpu().clone())
+    #     pdb.set_trace()
+    #     adv_logits_feature5 = model(adv_image)[5]
+    #     adv_logits = interp(adv_logits_feature5)
+    #     adv_pred = adv_logits.argmax(dim=1)
+    #     confmat_adv.update(label, adv_pred)
+    #     if targeted:
+    #         apsrs.extend(((adv_pred == attack_label) & target_mask).flatten(1).sum(dim=1).div(target_sum).cpu().tolist())
+    #     else:
+    #         apsrs.extend(((adv_pred != label) & mask).flatten(1).sum(dim=1).div(mask_sum).cpu().tolist())
 
-        for metric, metric_func in metrics.items():
-            distances[metric].extend(metric_func(adv_image, image).detach().cpu().tolist())
+    #     for metric, metric_func in metrics.items():
+    #         distances[metric].extend(metric_func(adv_image, image).detach().cpu().tolist())
 
-    pdb.set_trace()
-    acc_global, accs, ious = confmat_orig.compute()
-    adv_acc_global, adv_accs, adv_ious = confmat_adv.compute()
+    # pdb.set_trace()
+    # acc_global, accs, ious = confmat_orig.compute()
+    # adv_acc_global, adv_accs, adv_ious = confmat_adv.compute()
 
-    data = {
-        # 'image_names': image_list[:len(apsrs)],
-        'targeted': targeted,
-        'accuracy': accuracies,
-        'acc_global': acc_global.item(),
-        'adv_acc_global': adv_acc_global.item(),
-        'ious': ious.cpu().tolist(),
-        'adv_ious': adv_ious.cpu().tolist(),
-        'apsr_orig': apsrs_orig,
-        'apsr': apsrs,
-        'times': times,
-        'num_forwards': forwards,
-        'num_backwards': backwards,
-        'distances': distances,
-    }
-    pdb.set_trace()
-    if return_adv:
-        shapes = [img.shape for img in images]
-        if len(set(shapes)) == 1:
-            images = torch.cat(images, dim=0)
-            adv_images = torch.cat(adv_images, dim=0)
-        data['images'] = images
-        data['adv_images'] = adv_images
+    # data = {
+    #     # 'image_names': image_list[:len(apsrs)],
+    #     'targeted': targeted,
+    #     'accuracy': accuracies,
+    #     'acc_global': acc_global.item(),
+    #     'adv_acc_global': adv_acc_global.item(),
+    #     'ious': ious.cpu().tolist(),
+    #     'adv_ious': adv_ious.cpu().tolist(),
+    #     'apsr_orig': apsrs_orig,
+    #     'apsr': apsrs,
+    #     'times': times,
+    #     'num_forwards': forwards,
+    #     'num_backwards': backwards,
+    #     'distances': distances,
+    # }
+    # pdb.set_trace()
+    # if return_adv:
+    #     shapes = [img.shape for img in images]
+    #     if len(set(shapes)) == 1:
+    #         images = torch.cat(images, dim=0)
+    #         adv_images = torch.cat(adv_images, dim=0)
+    #     data['images'] = images
+    #     data['adv_images'] = adv_images
 
-    return data
+    # return data
+    return
 
 
 if __name__ == "__main__":
@@ -464,11 +452,12 @@ if __name__ == "__main__":
                             batch_size=1, shuffle=False, pin_memory=True)
 
 
-    adversarial_examples = run_attack(model, testloader, device)
+    # adversarial_examples = run_attack(model, testloader, device)
+    run_attack(model, testloader, device)
 
     print("after creating adversarial_examples")
     
-    pdb.set_trace()
+    # pdb.set_trace()
     # save adversarial examples([adversarial examples, labels])
-    with open('../data/adversarial_example', 'wb') as fp:
-        pickle.dump(adversarial_examples, fp)
+    # with open('../data/adversarial_example', 'wb') as fp:
+    #     pickle.dump(adversarial_examples, fp)
