@@ -113,7 +113,7 @@ class cityscapesDataSet(data.Dataset):
 
         lbl = label.astype(float)
         label = lbl.astype(int)
-
+        pdb.set_trace()
         size = image.shape
         image = image[:, :, ::-1]  # change to BGR
         image -= self.mean
