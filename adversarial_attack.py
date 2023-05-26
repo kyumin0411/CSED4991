@@ -22,7 +22,6 @@ import random
 import PIL
 
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
-testloader_iteration = 0
 
 palette = [128, 64, 128, 244, 35, 232, 70, 70, 70, 102, 102, 156, 190, 153, 153, 153, 153, 153, 250, 170, 30,
            220, 220, 0, 107, 142, 35, 152, 251, 152, 70, 130, 180, 220, 20, 60, 255, 0, 0, 0, 0, 142, 0, 0, 70,
@@ -192,8 +191,6 @@ def DAG_Attack(model: nn.Module,
     img = PIL.Image.fromarray(np_arr_RGB)
     img.save(data_path)
 
-    testloader_iteration += 1
-    print("%d image is adversed. \n",testloader_iteration)
     # return best_adv
     return
 
@@ -225,7 +222,7 @@ def run_attack(model,
         images, adv_images = [], []
     pdb.set_trace()
     adv_percent_file = open("../data/adversarial/adv_percent.txt", "w")
-
+    testloader_iteration = 0
     # for i, (image, label, size, name) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
@@ -262,6 +259,8 @@ def run_attack(model,
                                model_name = "FIFO", image_name= name, adv_percent_file= adv_percent_file,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
+        testloader_iteration += 1
+        print("%d image is adversed. \n",testloader_iteration)
         # pdb.set_trace()
     #     logits_feature5 = model(image)[5]
     #     logits=interp(logits_feature5)
