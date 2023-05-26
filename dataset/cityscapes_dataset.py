@@ -98,12 +98,12 @@ class cityscapesDataSet(data.Dataset):
         w, h = image.size
 
         # edit
-        # image, label = self._apply_transform(image, label, scale=0.8)
+        image, label = self._apply_transform(image, label, scale=0.8)
 
-        # crop_size = min(600, min(image.size[:2]))
-        # i, j, h, w = transforms.RandomCrop.get_params(image, output_size=(crop_size,crop_size)) 
-        # image = TF.crop(image, i, j, h, w) 
-        # label = TF.crop(label, i, j, h, w)
+        crop_size = min(600, min(image.size[:2]))
+        i, j, h, w = transforms.RandomCrop.get_params(image, output_size=(crop_size,crop_size)) 
+        image = TF.crop(image, i, j, h, w) 
+        label = TF.crop(label, i, j, h, w)
 
         if random.random() > 0.5:
             image = TF.hflip(image)
@@ -114,7 +114,7 @@ class cityscapesDataSet(data.Dataset):
 
         lbl = label.astype(float)
         label = lbl.astype(int)
-        # pdb.set_trace()
+        pdb.set_trace()
         size = image.shape
         image = image[:, :, ::-1]  # change to BGR
         image -= self.mean
