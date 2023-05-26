@@ -98,7 +98,7 @@ class cityscapesDataSet(data.Dataset):
         w, h = image.size
 
         # edit
-        image, label = self._apply_transform(image, label, scale=0.8)
+        # image, label = self._apply_transform(image, label, scale=0.8)
 
         # crop_size = min(600, min(image.size[:2]))
         # i, j, h, w = transforms.RandomCrop.get_params(image, output_size=(crop_size,crop_size)) 
