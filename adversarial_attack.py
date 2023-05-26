@@ -83,93 +83,6 @@ def difference_of_logits(logits: Tensor, labels: Tensor, labels_infhot: Optional
     other_logits = (logits - labels_infhot).amax(dim=1)
     return class_logits - other_logits
 
-
-def dag(model: nn.Module,
-        inputs: Tensor,
-        labels: Tensor,
-        label, 
-        adv_label,
-        interp,
-        device='cuda:0',
-        masks: Tensor = None,
-        targeted: bool = False,
-        adv_threshold: float = 0.99,
-        max_iter: int = 200,
-        gamma: float = 0.5,
-        p: float = float('inf'),
-        callback = None) -> Tensor:
-    """DAG attack from https://arxiv.org/abs/1703.08603"""
-    device = inputs.device
-    batch_size = len(inputs)
-    batch_view = lambda tensor: tensor.view(-1, *[1] * (inputs.ndim - 1))
-    multiplier = -1 if targeted else 1
-
-
-
-    # Setup variables
-    r = torch.zeros_like(inputs)
-
-    # Init trackers
-    best_adv_percent = torch.zeros(batch_size, device=device)
-    adv_found = torch.zeros_like(best_adv_percent, dtype=torch.bool)
-    best_adv = inputs.clone()
-
-    for i in range(max_iter):
-
-        active_inputs = ~adv_found
-        inputs_ = inputs[active_inputs]
-        r_ = r[active_inputs]
-        r_.requires_grad_(True)
-
-        adv_inputs_ = (inputs_ + r_).clamp(0, 1)
-        
-        logits_feature5 = model(adv_inputs_)[5]
-        logits = interp(logits_feature5)
-
-        pdb.set_trace()
-        if i == 0:
-            num_classes = logits.size(1)
-            if masks is None:
-                masks = labels < num_classes
-            masks_sum = masks.flatten(1).sum(dim=1)
-            masked_labels = labels * masks
-            labels_infhot = torch.zeros_like(logits.detach()).scatter(1, masked_labels.unsqueeze(1), float('inf'))
-
-        dl = multiplier * difference_of_logits(logits, labels=masked_labels[active_inputs],
-                                               labels_infhot=labels_infhot[active_inputs])
-        pixel_is_adv = dl < 0
-
-        active_masks = masks[active_inputs]
-        adv_percent = (pixel_is_adv & active_masks).flatten(1).sum(dim=1) / masks_sum[active_inputs]
-        is_adv = adv_percent >= adv_threshold
-        adv_found[active_inputs] = is_adv
-        best_adv[active_inputs] = torch.where(batch_view(is_adv), adv_inputs_.detach(), best_adv[active_inputs])
-
-        if callback:
-            callback.accumulate_line('dl', i, dl[active_masks].mean(), title=f'DAG (p={p}, γ={γ}) - DL')
-            callback.accumulate_line(f'L{p}', i, r.flatten(1).norm(p=p, dim=1).mean(), title=f'DAG (p={p}, γ={γ}) - Norm')
-            callback.accumulate_line('adv%', i, adv_percent.mean(), title=f'DAG (p={p}, γ={γ}) - Adv percent')
-
-            if (i + 1) % (max_iter // 20) == 0 or (i + 1) == max_iter:
-                callback.update_lines()
-
-        if is_adv.all():
-            break
-
-        loss = (dl[~is_adv] * active_masks[~is_adv]).relu()
-        pdb.set_trace()
-
-        r_grad = grad(loss.sum(), r_, only_inputs=True)[0]
-        r_grad.div_(batch_view(r_grad.flatten(1).norm(p=p, dim=1).clamp_min_(1e-8)))
-        r_.data.sub_(r_grad, alpha=γ)
-
-        r[active_inputs] = r_
-
-    if callback:
-        callback.update_lines()
-
-    return best_adv
-
 def DAG_Attack(model: nn.Module,
         inputs: Tensor,
         model_name,
@@ -178,6 +91,7 @@ def DAG_Attack(model: nn.Module,
         label, 
         adv_label,
         interp,
+        adv_percent_file,
         device='cuda:0',
         masks: Tensor = None,
         targeted: bool = False,
@@ -187,7 +101,7 @@ def DAG_Attack(model: nn.Module,
         p: float = float('inf'),
         callback = None) -> Tensor:
     """DAG attack from https://arxiv.org/abs/1703.08603"""
-    pdb.set_trace()
+    # pdb.set_trace()
     batch_size = len(inputs)
     batch_view = lambda tensor: tensor.view(-1, *[1] * (inputs.ndim - 1))
     multiplier = -1 if targeted else 1
@@ -235,6 +149,9 @@ def DAG_Attack(model: nn.Module,
         # pdb.set_trace()
         # pixel_adv_found.logical_or_(pixel_is_adv)
         adv_percent = (pixel_is_adv_label & masks).flatten(1).sum(dim=1) / masks_sum
+
+        if iter==0:
+            adv_percent_file.write("1st iterate adv_percent : %f, " %(adv_percent))
        
         best_adv = torch.where(pixel_is_adv_label & masks, image.detach(), best_adv)
  
@@ -244,7 +161,9 @@ def DAG_Attack(model: nn.Module,
             print('adversed at %d iterate. %d %', iter, adv_percent)
             break
 
-    pdb.set_trace()
+    # pdb.set_trace()
+
+    adv_percent_file.write("%d iterate adv_percent : %f \n" %(iter, adv_percent))
 
     data_path = "../data/adversarial/" + model_name + "_" + image_name[0].split('/')[1]
     original_data_path = "../data/adversarial/" + 'original_image' + "_" + image_name[0].split('/')[1]
@@ -303,6 +222,8 @@ def run_attack(model,
     if return_adv:
         images, adv_images = [], []
 
+    adv_percent_file = open("../../adv_percent.txt", "w")
+
     # for i, (image, label, size, name) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
@@ -336,7 +257,7 @@ def run_attack(model,
         # pdb.set_trace()
         adv_target=adv_target.to(device)
         DAG_Attack(model=model, label=label_oh, labels=label, masks=mask,
-                               model_name = "FIFO", image_name= name,
+                               model_name = "FIFO", image_name= name, adv_percent_file= adv_percent_file,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
         # pdb.set_trace()
