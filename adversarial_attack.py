@@ -252,16 +252,41 @@ def DAG_Attack(model: nn.Module,
             if (i + 1) % (max_iter // 20) == 0 or (i + 1) == max_iter:
                 callback.update_lines()
 
-    pdb.set_trace()
     if callback:
         callback.update_lines()
 
-    adversarial_image = inputs + r_perturb
+    pdb.set_trace()
+
     data_path = "../data/adversarial/" + model_name + "_" + image_name[0].split('/')[1]
-    
-    np_arr = np.array(adversarial_image, dtype=np.uint8)
-    img = PIL.Image.fromarray(np_arr)
+    original_data_path = "../data/adversarial/" + 'original_image' + "_" + image_name[0].split('/')[1]
+
+    np_arr = np.array(inputs.cpu(), dtype=np.uint8)
+    image_mean = torch.mean(inputs, dim=0)
+    image_np = image_mean.cpu().numpy()
+    image_np.transpose(1,2,0)
+    image_transpose= image_np.transpose(1,2,0)
+    repaired_image = image_transpose + IMG_MEAN
+    np_arr= np.array(repaired_image, dtype=np.uint8)
+    np_arr_RGB = np_arr[:,:,::-1]
+    img = PIL.Image.fromarray(np_arr_RGB)
+    img.save(original_data_path)
+
+    adversarial_image = inputs + r_perturb
+
+    np_arr = np.array(adversarial_image.cpu(), dtype=np.uint8)
+    image_mean = torch.mean(adversarial_image, dim=0)
+    image_np = image_mean.cpu().numpy()
+    image_np.transpose(1,2,0)
+    image_transpose= image_np.transpose(1,2,0)
+    repaired_image = image_transpose + IMG_MEAN
+    np_arr= np.array(repaired_image, dtype=np.uint8)
+    np_arr_RGB = np_arr[:,:,::-1]
+    img = PIL.Image.fromarray(np_arr_RGB)
     img.save(data_path)
+    
+    # np_arr = np.array(adversarial_image, dtype=np.uint8)
+    # img = PIL.Image.fromarray(np_arr)
+    # img.save(data_path)
     return best_adv
 
 def run_attack(model,
@@ -302,31 +327,6 @@ def run_attack(model,
         image = Variable(image).to(device)
         # label = label.to(device).squeeze(1).long()
     
-        pdb.set_trace()
-        ### saving image test ###
-        # adversarial_image = image + r_perturb
-        data_path = "../data/adversarial/" + "original_image" + "_" + name[0].split('/')[1]
-        
-        np_arr = np.array(image.cpu(), dtype=np.uint8)
-
-        image_mean = torch.mean(image, dim=0)
-
-        image_np = image_mean.cpu().numpy()
-
-        image_np.transpose(1,2,0)
-
-        image_transpose= image_np.transpose(1,2,0)
-
-        repaired_image = image_transpose + IMG_MEAN
-
-        np_arr= np.array(repaired_image, dtype=np.uint8)
-
-        np_arr_RGB = np_arr[:,:,::-1]
-
-        img = PIL.Image.fromarray(np_arr_RGB)
-
-        img.save(data_path)
-        ### saving image test ###
         image = image.clone().detach().float()
         # pdb.set_trace()
         
