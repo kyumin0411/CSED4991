@@ -281,6 +281,16 @@ def run_attack(model,
     # for i, (image, label, size, name) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
+
+        ### saving image test ###
+        # adversarial_image = image + r_perturb
+        data_path = "../data/adversarial/" + "original_image" + "_" + name[0].split('/')[1]
+        
+        np_arr = np.array(image, dtype=np.uint8)
+        img = PIL.Image.fromarray(np_arr)
+        img.save(data_path)
+        pdb.set_trace()
+        ### saving image test ###
         image = image.clone().detach().float()
         # pdb.set_trace()
         if return_adv:
