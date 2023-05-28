@@ -98,10 +98,7 @@ class adversarialDataSet(data.Dataset):
         name = datafiles["name"]
 
         image = np.asarray(image, np.float32)
-        label = self.encode_segmap(np.array(label, dtype=np.float32))
-
-        lbl = label.astype(float)
-        label = lbl.astype(int)
+        
         # pdb.set_trace()
         size = image.shape
         image = image[:, :, ::-1]  # change to BGR
