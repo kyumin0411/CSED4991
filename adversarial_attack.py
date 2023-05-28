@@ -233,14 +233,16 @@ def run_attack(model,
         interp = nn.Upsample(size=(size[0][0],size[0][1]), mode='bilinear')
         image = Variable(image).to(device)
         # label = label.to(device).squeeze(1).long()
-    
+        
         image = image.clone().detach().float()
-        # pdb.set_trace()
+        pdb.set_trace()
+        label_path = "../data/adversarial/cropped_label/" + "_" + name[0].split('/')[1][:-4] + ".npy"
+        label_np = label.numpy()
+        np.save(label_path, label_np)
         
         label = label.clone().detach().float()
         label = label.to(device)    
 
-        pdb.set_trace()
         mask = label < n_classes
         mask = mask.to(device)    
         mask_sum = mask.flatten(1).sum(dim=1)
