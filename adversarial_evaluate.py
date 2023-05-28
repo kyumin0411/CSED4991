@@ -77,7 +77,7 @@ if __name__ == "__main__":
         output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
 
         output_col = colorize_mask(output)
-        label_col = colorize_mask(label)
+        # label_col = colorize_mask(label)
         output = PIL.Image.fromarray(output)
 
         name = name[0].split('/')[-1]
