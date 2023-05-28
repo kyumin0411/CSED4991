@@ -164,8 +164,8 @@ def DAG_Attack(model: nn.Module,
 
     adv_percent_file.write("%d iterate adv_percent : %f \n" %(iter, adv_percent))
 
-    data_path = "../data/adversarial/" + model_name + "_" + image_name[0].split('/')[1]
-    original_data_path = "../data/adversarial/" + 'original_image' + "_" + image_name[0].split('/')[1]
+    data_path = "../data/adversarial/adv_image/" + model_name + "_" + image_name[0].split('/')[1]
+    original_data_path = "../data/adversarial/orig_image/" + 'original' + "_" + image_name[0].split('/')[1]
 
     np_arr = np.array(inputs.cpu(), dtype=np.uint8)
     image_mean = torch.mean(inputs, dim=0)
@@ -259,7 +259,7 @@ def run_attack(model,
         # pdb.set_trace()
         adv_target=adv_target.to(device)
         DAG_Attack(model=model, label=label_oh, labels=label, masks=mask,
-                               model_name = "FIFO", image_name= name, adv_percent_file= adv_percent_file,
+                               model_name = "Cityscape", image_name= name, adv_percent_file= adv_percent_file,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
         testloader_iteration += 1
