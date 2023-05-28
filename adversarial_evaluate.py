@@ -71,7 +71,7 @@ if __name__ == "__main__":
         output = interp(output_feature5)
 
         output = torch.mean(output, dim=0)
-        output = output.cpu().numpy()
+        output = output.cpu().detach().numpy()
         output = output.transpose(1,2,0)
         output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
 
