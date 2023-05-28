@@ -220,7 +220,7 @@ def run_attack(model,
     # pdb.set_trace()
     if return_adv:
         images, adv_images = [], []
-    pdb.set_trace()
+    # pdb.set_trace()
     adv_percent_file = open("../data/adversarial/adv_percent.txt", "w")
     testloader_iteration = 0
     # for i, (image, label, size, name) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
@@ -235,7 +235,7 @@ def run_attack(model,
         # label = label.to(device).squeeze(1).long()
         
         image = image.clone().detach().float()
-        pdb.set_trace()
+        # pdb.set_trace()
         label_path = "../data/adversarial/cropped_label/" + name[0].split('/')[1][:-4] + ".npy"
         label_np = label.numpy()
         np.save(label_path, label_np)
