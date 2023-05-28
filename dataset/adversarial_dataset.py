@@ -93,7 +93,7 @@ class adversarialDataSet(data.Dataset):
         pdb.set_trace()
         image = Image.open(datafiles["img"]).convert('RGB')
         label = np.load(datafiles["label"])
-        label = torch.from_numpy(label)
+        # label = torch.from_numpy(label)
         # label = Image.open(datafiles["label"])
         name = datafiles["name"]
 
@@ -105,7 +105,7 @@ class adversarialDataSet(data.Dataset):
         image -= self.mean
         image = image.transpose((2, 0, 1))
 
-        return image.copy(), label, np.array(size), name
+        return image.copy(), label.copy(), np.array(size), name
 
 
 if __name__ == '__main__':
