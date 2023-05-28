@@ -78,11 +78,11 @@ if __name__ == "__main__":
 
         output_col = colorize_mask(output)
         # label_col = colorize_mask(label)
-        output = PIL.Image.fromarray(output)
+        # output = PIL.Image.fromarray(output)
 
         name = name[0].split('/')[-1]
         # output.save('%s/%s' % (save_dir_fz, name))
-        color_path = "../data/adversarial/adv_image/" + "original_colored" + "_" + name[0].split('/')[1]
+        color_path = "../data/adversarial/adv_image/" + "original_colored" + "_" + name
         # label_color_path = "../data/adversarial/adv_image/" + "original_colored" + "_" + name[0].split('/')[1]
         output_col.save(color_path)
         # label_col.save(label_color_path)
