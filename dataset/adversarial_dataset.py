@@ -92,7 +92,9 @@ class adversarialDataSet(data.Dataset):
         datafiles = self.files[index]
         pdb.set_trace()
         image = Image.open(datafiles["img"]).convert('RGB')
-        label = Image.open(datafiles["label"])
+        label = np.load(datafiles["label"])
+        label = torch.from_numpy(label)
+        # label = Image.open(datafiles["label"])
         name = datafiles["name"]
 
         # resize
