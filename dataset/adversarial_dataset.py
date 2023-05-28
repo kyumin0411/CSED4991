@@ -98,14 +98,14 @@ class adversarialDataSet(data.Dataset):
         name = datafiles["name"]
 
         image = np.asarray(image, np.float32)
-        
+
         # pdb.set_trace()
         size = image.shape
         image = image[:, :, ::-1]  # change to BGR
         image -= self.mean
         image = image.transpose((2, 0, 1))
 
-        return image.copy(), label.copy(), np.array(size), name
+        return image.copy(), label, np.array(size), name
 
 
 if __name__ == '__main__':
