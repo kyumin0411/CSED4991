@@ -263,7 +263,7 @@ def run_attack(model,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
         testloader_iteration += 1
-        print(testloader_iteration , " image is adversed. \n")
+        print(testloader_iteration , " image is adversed.")
         # pdb.set_trace()
     #     logits_feature5 = model(image)[5]
     #     logits=interp(logits_feature5)
