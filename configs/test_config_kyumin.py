@@ -5,6 +5,7 @@ import numpy as np
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 MODEL = 'RefineNetNew'
 DATA_DIRECTORY ='/home/kyumin/data'
+ADVERSARIAL_DATA_DIRECTORY = '/home/kyumin/data/adversarial'
 DATA_CITY_PATH = './dataset/cityscapes_list/clear_lindau.txt'
 DATA_DIRECTORY_CITY = '/home/kyumin/data/Cityscapes'
 DATA_LIST_PATH_EVAL = '/home/kyumin/data/Foggy_Zurich/lists_file_names/RGB_testv2_filenames.txt'
@@ -34,6 +35,7 @@ MODEL = 'RefineNetNew'
 def get_arguments():
     parser = argparse.ArgumentParser(description="Evlauation")
     parser.add_argument("--data-dir", type=str, default=DATA_DIRECTORY)
+    parser.add_argument("--adversarial-data-dir", type=str, default=ADVERSARIAL_DATA_DIRECTORY)
     parser.add_argument("--data-city-list", type=str, default = DATA_CITY_PATH)
     parser.add_argument("--data-list-eval-fd", type=str, default=DATA_LIST_PATH_EVAL_FD)      
     parser.add_argument("--data-list-eval-fdd", type=str, default=DATA_LIST_PATH_EVAL_FDD)             
