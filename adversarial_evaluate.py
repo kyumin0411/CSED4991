@@ -68,7 +68,7 @@ if __name__ == "__main__":
         # label = label.clone().detach().float()
         # label = label.to(device) 
         output_feature5 = model(Variable(image).cuda(args.gpu))[5]
-        output = interp(output)
+        output = interp(output_feature5)
 
         output = torch.mean(output, dim=0)
         output = output.cpu().numpy()
