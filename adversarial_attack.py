@@ -236,7 +236,7 @@ def run_attack(model,
         
         image = image.clone().detach().float()
         pdb.set_trace()
-        label_path = "../data/adversarial/cropped_label/" + "_" + name[0].split('/')[1][:-4] + ".npy"
+        label_path = "../data/adversarial/cropped_label/" + name[0].split('/')[1][:-4] + ".npy"
         label_np = label.numpy()
         np.save(label_path, label_np)
         
