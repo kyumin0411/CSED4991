@@ -62,12 +62,12 @@ if __name__ == "__main__":
 
     interp = nn.Upsample(size=(600, 600), mode='bilinear')
 
+    testloader_iteration = 0
+
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
-        pdb.set_trace()
+        # pdb.set_trace()
         label = label.numpy()
-        # label = label.clone().detach().float()
-        # label = label.to(device) 
         output_feature5 = model(Variable(image).cuda(args.gpu))[5]
         output = interp(output_feature5)
 
@@ -77,13 +77,10 @@ if __name__ == "__main__":
         output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
 
         output_col = colorize_mask(output)
-        # label_col = colorize_mask(label)
-        # output = PIL.Image.fromarray(output)
 
         name = name[0].split('/')[-1]
-        # output.save('%s/%s' % (save_dir_fz, name))
-        color_path = "../data/adversarial/adv_image/" + "original_colored" + "_" + name
-        # label_color_path = "../data/adversarial/adv_image/" + "original_colored" + "_" + name[0].split('/')[1]
+        color_path = "../data/adversarial/orig_image/" + "original_colored" + "_" + name
         output_col.save(color_path)
-        # label_col.save(label_color_path)
+        testloader_iteration += 1
+        print(testloader_iteration, " is colored.")
            
