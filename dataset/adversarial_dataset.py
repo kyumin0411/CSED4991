@@ -53,7 +53,7 @@ class adversarialDataSet(data.Dataset):
         self.ignore_index = 255
         self.class_map = dict(zip(self.valid_classes, range(19)))
         for name in self.img_ids:
-            pdb.set_trace()
+            # pdb.set_trace()
             image_name = name.split('/')[1]
             img_file = osp.join(self.root, "adv_image/%s" % ("Cityscape_" + image_name))
             label_file = osp.join(self.root, "cropped_label/%s" % (image_name[:-4]+'.npy'))
@@ -61,7 +61,7 @@ class adversarialDataSet(data.Dataset):
             self.files.append({
                 "img": img_file,
                 "label": label_file,
-                "name": name
+                "name": image_name
             })
         
 
