@@ -1,24 +1,12 @@
-import warnings
-from distutils.version import LooseVersion
-from typing import Callable, Dict, Optional, Union
 from configs.test_config_kyumin import get_arguments
 from model.refinenetlw import rf_lw101
 from dataset.adversarial_dataset import adversarialDataSet
-import os.path as osp
-import os
 import numpy as np
-import pdb
-from collections import OrderedDict
-import pickle
 import torch
-from torch import Tensor, nn
+from torch import nn
 from torch.utils import data
-from tqdm import tqdm
-from torch.autograd import grad, Variable
+from torch.autograd import Variable
 
-from util import ConfusionMatrix, make_one_hot, generate_target
-from functools import partial
-import random
 import PIL
 
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
