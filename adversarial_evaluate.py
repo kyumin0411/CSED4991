@@ -79,7 +79,7 @@ if __name__ == "__main__":
         output_col = colorize_mask(output)
 
         name = name[0].split('/')[-1]
-        color_path = "../data/adversarial/FIFO_adversarial_attack/Cityscape_color_image/" + "Cityscape_colored" + "_" + name
+        color_path = "../data/adversarial/FIFO_adversarial_attack/color_image/" + "original_colored" + "_" + name
         output_col.save(color_path)
         testloader_iteration += 1
         print(testloader_iteration, " is colored.")
