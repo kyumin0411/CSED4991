@@ -156,15 +156,15 @@ def DAG_Attack(model: nn.Module,
  
         # pdb.set_trace()
         if adv_percent >= adv_threshold:
-            pdb.set_trace()
-            print('adversed at %d iterate. %d %', iter, adv_percent)
+            # pdb.set_trace()
+            print('adversed at ',iter,' iterate. ',adv_percent,' %')
             break
 
     pdb.set_trace()
     adv_percent_file.write("%d iterate adv_percent : %f \n" %(iter, adv_percent))
 
-    data_path = "../data/adversarial/adv_image/" + model_name + "_" + image_name[0].split('/')[1]
-    original_data_path = "../data/adversarial/orig_image/" + 'original' + "_" + image_name[0].split('/')[1]
+    data_path = "../data/adversarial/FIFO_adversarial_attack/adv_image/" + model_name + "_" + image_name[0].split('/')[1]
+    original_data_path = "../data/adversarial/FIFO_adversarial_attack/orig_image/" + 'original' + "_" + image_name[0].split('/')[1]
 
     np_arr = np.array(inputs.cpu(), dtype=np.uint8)
     image_mean = torch.mean(inputs, dim=0)
@@ -220,7 +220,7 @@ def run_attack(model,
     if return_adv:
         images, adv_images = [], []
     # pdb.set_trace()
-    adv_percent_file = open("../data/adversarial/adv_percent.txt", "w")
+    adv_percent_file = open("../data/adversarial/FIFO_adversarial_attack/adv_percent.txt", "w")
     testloader_iteration = 0
     # for i, (image, label, size, name) in enumerate(tqdm(loader, ncols=80, total=loader_length)):
     for index, batch in enumerate(testloader):
@@ -235,7 +235,7 @@ def run_attack(model,
         
         image = image.clone().detach().float()
         # pdb.set_trace()
-        label_path = "../data/adversarial/cropped_label/" + name[0].split('/')[1][:-4] + ".npy"
+        label_path = "../data/adversarial/FIFO_adversarial_attack/cropped_label/" + name[0].split('/')[1][:-4] + ".npy"
         label_np = label.numpy()
         np.save(label_path, label_np)
         
@@ -258,7 +258,7 @@ def run_attack(model,
         # pdb.set_trace()
         adv_target=adv_target.to(device)
         DAG_Attack(model=model, label=label_oh, labels=label, masks=mask,
-                               model_name = "Cityscape", image_name= name, adv_percent_file= adv_percent_file,
+                               model_name = "FIFO", image_name= name, adv_percent_file= adv_percent_file,
                                adv_label = adv_target, inputs=image,interp=interp, targeted=targeted)
        
         testloader_iteration += 1
