@@ -141,7 +141,7 @@ def DAG_Attack(model: nn.Module,
         r_perturb.data.sub_(r_m_grad, alpha=gamma)
 
         # r_perturb.data.add_(r_m_grad)
-        pdb.set_trace()
+        # pdb.set_trace()
         image = (image + r_perturb).clamp(0, 1)
 
         # pixel_is_adv = r_m < 0
@@ -160,7 +160,7 @@ def DAG_Attack(model: nn.Module,
             print('adversed at ',iter,' iterate. ',adv_percent,' %')
             break
 
-    pdb.set_trace()
+    # pdb.set_trace()
     adv_percent_file.write("%d iterate adv_percent : %f \n" %(iter, adv_percent))
 
     data_path = "../data/adversarial/FIFO_adversarial_attack/adv_image/" + model_name + "_" + image_name[0].split('/')[1]
