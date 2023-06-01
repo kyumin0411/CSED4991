@@ -84,7 +84,7 @@ def compute_mIoU(root,list_path):
         pdb.set_trace()
         image_name = name.split('/')[1]
         pred_file = join(root, "FIFO_adversarial_attack/Cityscape_color_image/%s" % ("Cityscape_colored_" + image_name))
-        gt_file = join(root, "FIFO_adversarial_attack/color_image/%s" % ("original_colored_" + image_name[:-4]+'.npy'))
+        gt_file = join(root, "FIFO_adversarial_attack/color_image/%s" % ("original_colored_" + image_name))
 
         pred = np.array(Image.open(pred_file))
         label = np.array(Image.open(gt_file))
