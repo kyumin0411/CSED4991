@@ -112,6 +112,6 @@ if __name__ == "__main__":
 
     print("Calculate mIoU")
     print("--- Model : Cityscape")
-    print("--- Inputs : original")
+    print("--- Inputs : adversed")
     mIoU = compute_mIoU(args.adversarial_data_dir, args.data_city_list)
     # print ("result mIoU : ", mIoU)
