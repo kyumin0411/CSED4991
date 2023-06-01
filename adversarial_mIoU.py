@@ -82,7 +82,7 @@ def compute_mIoU(root,list_path):
 
     for name in img_ids:
         image_name = name.split('/')[1]
-        pred_file = join(root, "FIFO_adversarial_attack/FIFO_orig_color_image/%s" % ("original_colored_" + image_name))
+        pred_file = join(root, "FIFO_adversarial_attack/FIFO_color_image/%s" % ("FIFO_colored_" + image_name))
         gt_file = join(root, "FIFO_adversarial_attack/color_image/%s" % ("original_colored_" + image_name))
 
         pred = np.array(Image.open(pred_file))
@@ -112,6 +112,6 @@ if __name__ == "__main__":
 
     print("Calculate mIoU")
     print("--- Model : FIFO")
-    print("--- Inputs : original")
+    print("--- Inputs : adversed")
     mIoU = compute_mIoU(args.adversarial_data_dir, args.data_city_list)
     # print ("result mIoU : ", mIoU)
