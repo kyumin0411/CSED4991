@@ -55,8 +55,8 @@ class adversarialDataSet(data.Dataset):
         for name in self.img_ids:
             # pdb.set_trace()
             image_name = name.split('/')[1]
-            img_file = osp.join(self.root, "FIFO_adversarial_attack/orig_image/%s" % ("original_" + image_name))
-            label_file = osp.join(self.root, "FIFO_adversarial_attack/cropped_label/%s" % (image_name[:-4]+'.npy'))
+            img_file = osp.join(self.root, "Cityscape_adversarial_attack/orig_image/%s" % ("original_" + image_name))
+            label_file = osp.join(self.root, "Cityscape_adversarial_attack/cropped_label/%s" % (image_name[:-4]+'.npy'))
             #pdb.set_trace()
             self.files.append({
                 "img": img_file,
