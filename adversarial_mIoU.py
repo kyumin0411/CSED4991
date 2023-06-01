@@ -14,6 +14,7 @@ def fast_hist(a, b, n):
 
 
 def per_class_iu(hist):
+    pdb.set_trace()
     return np.diag(hist) / (hist.sum(axis=1) + hist.sum(axis=0) - np.diag(hist))
 
 def compute_mIoU(root,list_path):
