@@ -81,7 +81,6 @@ def compute_mIoU(root,list_path):
     img_ids = [i_id.strip() for i_id in open(list_path)]
 
     for name in img_ids:
-        pdb.set_trace()
         image_name = name.split('/')[1]
         pred_file = join(root, "FIFO_adversarial_attack/Cityscape_color_image/%s" % ("Cityscape_colored_" + image_name))
         gt_file = join(root, "FIFO_adversarial_attack/color_image/%s" % ("original_colored_" + image_name))
@@ -94,6 +93,7 @@ def compute_mIoU(root,list_path):
             continue
         hist += fast_hist(label.flatten(), pred.flatten(), num_classes)
 
+    pdb.set_trace()
     mIoUs = per_class_iu(hist)
 
     print('Evaluation on Cityscapes lindau 40')
