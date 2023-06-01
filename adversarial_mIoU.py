@@ -111,7 +111,7 @@ if __name__ == "__main__":
     args = get_arguments()
 
     print("Calculate mIoU")
-    print("--- Model : Cityscape")
-    print("--- Inputs : original")
+    print("--- Model : FIFO")
+    print("--- Inputs : adversed")
     mIoU = compute_mIoU(args.adversarial_data_dir, args.data_city_list)
     # print ("result mIoU : ", mIoU)
