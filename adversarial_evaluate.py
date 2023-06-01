@@ -55,7 +55,9 @@ if __name__ == "__main__":
 
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
-        pdb.set_trace()
+        # pdb.set_trace()
+        mask = label < n_classes  
+        label = label * mask
         label = label.numpy()
         label = label[0][0]
         # output_feature5 = model(Variable(image).cuda(args.gpu))[5]
