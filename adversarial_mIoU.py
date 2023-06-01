@@ -77,7 +77,7 @@ def compute_mIoU(root,list_path):
 
     num_classes = 19
     hist = np.zeros((num_classes, num_classes))
-    pdb.set_trace()
+    # pdb.set_trace()
     img_ids = [i_id.strip() for i_id in open(list_path)]
 
     for name in img_ids:
@@ -93,7 +93,7 @@ def compute_mIoU(root,list_path):
             continue
         hist += fast_hist(label.flatten(), pred.flatten(), num_classes)
 
-    pdb.set_trace()
+    # pdb.set_trace()
     mIoUs = per_class_iu(hist)
 
     print('Evaluation on Cityscapes lindau 40')
@@ -106,9 +106,12 @@ def miou(args):
    compute_mIoU(args.gt_dir, args.pred_dir, args.devkit_dir, args.dataset)
 
 if __name__ == "__main__":
-    print("start adversarial_mIoU.py")
+    # print("start adversarial_mIoU.py")
 
     args = get_arguments()
 
+    print("Calculate mIoU")
+    print("--- Model : Cityscape")
+    print("--- Inputs : original")
     mIoU = compute_mIoU(args.adversarial_data_dir, args.data_city_list)
-    print ("result mIoU : ", mIoU)
+    # print ("result mIoU : ", mIoU)
