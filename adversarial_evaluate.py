@@ -69,9 +69,9 @@ if __name__ == "__main__":
         # output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
 
         # output_col = colorize_mask(output)
-        # output_col = colorize_mask(label)
+        output_col = colorize_mask(label)
 
-        # name = name[0].split('/')[-1]
+        name = name[0].split('/')[-1]
         color_path = "../data/adversarial/Cityscape_adversarial_attack/color_image/" + "original_colored_" + name
         output_col.save(color_path)
         testloader_iteration += 1
