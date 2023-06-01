@@ -56,8 +56,8 @@ if __name__ == "__main__":
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
         # pdb.set_trace()
-        # mask = label < n_classes  
-        # label = label * mask
+        mask = label < n_classes  
+        label = label * mask
         label = label.numpy()
         label = label[0][0]
         # output_feature5 = model(Variable(image).cuda(args.gpu))[5]
@@ -72,7 +72,7 @@ if __name__ == "__main__":
         output_col = colorize_mask(label)
 
         name = name[0].split('/')[-1]
-        color_path = "../data/adversarial/Cityscape_adversarial_attack/color_image/" + "original_colored_" + name
+        color_path = "../data/adversarial/Cityscape_adversarial_attack/color_image_handle_label/" + "original_colored_" + name
         output_col.save(color_path)
         testloader_iteration += 1
         print(testloader_iteration, " is colored.")
