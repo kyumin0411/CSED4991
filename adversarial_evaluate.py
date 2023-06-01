@@ -60,15 +60,15 @@ if __name__ == "__main__":
         label = label * mask
         label = label.numpy()
         label = label[0][0]
-        # output_feature5 = model(Variable(image).cuda(args.gpu))[5]
-        # output = interp(output_feature5)
+        output_feature5 = model(Variable(image).cuda(args.gpu))[5]
+        output = interp(output_feature5)
 
-        # output = torch.mean(output, dim=0)
-        # output = output.cpu().detach().numpy()
-        # output = output.transpose(1,2,0)
-        # output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
+        output = torch.mean(output, dim=0)
+        output = output.cpu().detach().numpy()
+        output = output.transpose(1,2,0)
+        output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
 
-        # output_col = colorize_mask(output)
+        output_col = colorize_mask(output)
         output_col = colorize_mask(label)
 
         name = name[0].split('/')[-1]
