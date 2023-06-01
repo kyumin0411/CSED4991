@@ -6,6 +6,7 @@ import torch
 from torch import nn
 from torch.utils import data
 from torch.autograd import Variable
+import pdb
 
 import PIL
 
@@ -54,7 +55,7 @@ if __name__ == "__main__":
 
     for index, batch in enumerate(testloader):
         image, label, size, name = batch
-        # pdb.set_trace()
+        pdb.set_trace()
         label = label.numpy()
         output_feature5 = model(Variable(image).cuda(args.gpu))[5]
         output = interp(output_feature5)
