@@ -57,18 +57,20 @@ if __name__ == "__main__":
         image, label, size, name = batch
         pdb.set_trace()
         label = label.numpy()
-        output_feature5 = model(Variable(image).cuda(args.gpu))[5]
-        output = interp(output_feature5)
+        label = label[0][0]
+        # output_feature5 = model(Variable(image).cuda(args.gpu))[5]
+        # output = interp(output_feature5)
 
-        output = torch.mean(output, dim=0)
-        output = output.cpu().detach().numpy()
-        output = output.transpose(1,2,0)
-        output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
+        # output = torch.mean(output, dim=0)
+        # output = output.cpu().detach().numpy()
+        # output = output.transpose(1,2,0)
+        # output = np.asarray(np.argmax(output, axis=2), dtype=np.uint8)
 
-        output_col = colorize_mask(output)
+        # output_col = colorize_mask(output)
+        output_col = colorize_mask(label)
 
         name = name[0].split('/')[-1]
-        color_path = "../data/adversarial/FIFO_adversarial_attack/color_image/" + "original_colored" + "_" + name
+        color_path = "../data/adversarial/FIFO_adversarial_attack/color_image/" + "original_colored_" + name
         output_col.save(color_path)
         testloader_iteration += 1
         print(testloader_iteration, " is colored.")
