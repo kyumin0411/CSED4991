@@ -1,6 +1,6 @@
 from configs.test_config_kyumin import get_arguments
 import numpy as np
-import PIL
+from PIL import Image
 from os.path import join
 import warnings
 import pdb
@@ -86,8 +86,8 @@ def compute_mIoU(root,list_path):
         pred_file = join(root, "FIFO_adversarial_attack/Cityscape_color_image/%s" % ("Cityscape_colored_" + image_name))
         gt_file = join(root, "FIFO_adversarial_attack/color_image/%s" % ("original_colored_" + image_name[:-4]+'.npy'))
 
-        pred = np.array(PIL.Image.open(pred_file))
-        label = np.array(PIL.Image.open(gt_file))
+        pred = np.array(Image.open(pred_file))
+        label = np.array(Image.open(gt_file))
         
         if len(label.flatten()) != len(pred.flatten()):
             print('Skipping: len(gt) = {:d}, len(pred) = {:d}, {:s}, {:s}'.format(len(label.flatten()), len(pred.flatten()), gt_file, pred_file[ind]))
