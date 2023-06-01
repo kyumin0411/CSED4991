@@ -93,7 +93,7 @@ def compute_mIoU(root,list_path):
             continue
         hist += fast_hist(label.flatten(), pred.flatten(), num_classes)
 
-    # pdb.set_trace()
+    pdb.set_trace()
     mIoUs = per_class_iu(hist)
 
     print('Evaluation on Cityscapes lindau 40')
