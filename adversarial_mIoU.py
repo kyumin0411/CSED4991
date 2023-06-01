@@ -82,8 +82,8 @@ def compute_mIoU(root,list_path):
 
     for name in img_ids:
         image_name = name.split('/')[1]
-        pred_file = join(root, "Cityscape_adversarial_attack/Cityscape_orig_color_image/%s" % ("original_colored_" + image_name))
-        gt_file = join(root, "Cityscape_adversarial_attack/color_image/%s" % ("original_colored_" + image_name))
+        pred_file = join(root, "Cityscape_adversarial_attack/Cityscape_color_image/%s" % ("Cityscape_colored_" + image_name))
+        gt_file = join(root, "Cityscape_adversarial_attack/color_image_handle_image/%s" % ("original_colored_" + image_name))
 
         pred = np.array(Image.open(pred_file))
         label = np.array(Image.open(gt_file))
